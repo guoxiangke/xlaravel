@@ -7,13 +7,43 @@ use Illuminate\Support\Facades\Http;
 
 class Febc
 {
+    private const PROGRAMS = [
+        '701' => ['title' => '灵程真言', 'code' => 'tllczy'],
+        '702' => ['title' => '喜乐灵程', 'code' => 'tljd'],
+        '703' => ['title' => '认识你真好', 'code' => 'vof'],
+        '704' => ['title' => '真爱驻我家', 'code' => 'tltl'],
+        '705' => ['title' => '尔道自建', 'code' => 'edzj'],
+        '706' => ['title' => '旷野吗哪', 'code' => 'mw'],
+        '707' => ['title' => '真道分解', 'code' => 'be'],
+        '708' => ['title' => '馒头的对话(周1-5)', 'code' => 'mn'],
+        '709' => ['title' => '豪放乐龄', 'code' => 'hfln'],
+        '710' => ['title' => '天路男行客', 'code' => 'pm'],
+        '711' => ['title' => '肋骨咏叹调', 'code' => 'sz'],
+        '712' => ['title' => '颜明放羊班', 'code' => 'ym'],
+        '713' => ['title' => '真爱世界', 'code' => 'tv'],
+        '714' => ['title' => '经今有味', 'code' => 'jjyw'],
+    ];
+
+    public function getResourceList(): array
+    {
+        $list = [];
+        foreach (self::PROGRAMS as $key => $program) {
+            $list[] = [
+                'keyword' => (string) $key,
+                'title' => $program['title'],
+            ];
+        }
+
+        return $list;
+    }
+
     public function resolve(string $keyword): ?ResourceResponse
     {
         if ($keyword === '700') {
             return $this->getProgramList();
         }
 
-        if ($keyword >= '701' && $keyword <= '713') {
+        if (array_key_exists($keyword, self::PROGRAMS)) {
             return $this->getAudioProgram($keyword);
         }
 
@@ -22,19 +52,9 @@ class Febc
 
     private function getProgramList(): ResourceResponse
     {
-        $content = '【701】灵程真言
-【702】喜乐灵程
-【703】认识你真好 
-【704】真爱驻我家
-【705】尔道自建
-【706】旷野吗哪
-【707】真道分解
-【708】馒头的对话(周1-5)
-【709】拥抱每一天
-【710】天路男行客
-【711】肋骨咏叹调
-【712】颜明放羊班
-【713】真爱世界';
+        $content = collect(self::PROGRAMS)
+            ->map(fn ($program, $key) => "【{$key}】{$program['title']}")
+            ->implode("\n");
 
         return ResourceResponse::text([
             'content' => $content,
@@ -43,27 +63,7 @@ class Febc
 
     private function getAudioProgram(string $keyword): ?ResourceResponse
     {
-        $programs = [
-            '701' => ['title' => '灵程真言', 'code' => 'tllczy'],
-            '702' => ['title' => '喜乐灵程', 'code' => 'tljd'],
-            '703' => ['title' => '认识你真好', 'code' => 'vof'],
-            '704' => ['title' => '真爱驻我家', 'code' => 'tltl'],
-            '705' => ['title' => '尔道自建', 'code' => 'edzj'],
-            '706' => ['title' => '旷野吗哪', 'code' => 'mw'],
-            '707' => ['title' => '真道分解', 'code' => 'be'],
-            '708' => ['title' => '馒头的对话', 'code' => 'mn'],
-            '709' => ['title' => '豪放乐龄', 'code' => 'hfln'],
-            '710' => ['title' => '天路男行客', 'code' => 'pm'],
-            '711' => ['title' => '肋骨咏叹调', 'code' => 'sz'],
-            '712' => ['title' => '颜明放羊班', 'code' => 'ym'],
-            '713' => ['title' => '真爱世界', 'code' => 'tv'],
-        ];
-
-        if (! isset($programs[$keyword])) {
-            return null;
-        }
-
-        $program = $programs[$keyword];
+        $program = self::PROGRAMS[$keyword];
 
         try {
             // Get FEBC program data

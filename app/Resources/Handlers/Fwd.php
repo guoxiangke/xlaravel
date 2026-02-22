@@ -10,6 +10,16 @@ use Illuminate\Support\Str;
 
 class Fwd
 {
+    public function getResourceList(): array
+    {
+        return [
+            ['keyword' => '789', 'title' => '每日灵修分享'],
+            ['keyword' => '803', 'title' => '主日崇拜'],
+            ['keyword' => '804', 'title' => '祷告会'],
+            ['keyword' => '806', 'title' => '主日信息'],
+        ];
+    }
+
     public function resolve(string $keyword): ?ResourceResponse
     {
         return match ($keyword) {

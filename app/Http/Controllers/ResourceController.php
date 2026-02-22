@@ -13,6 +13,14 @@ class ResourceController extends Controller
     ) {}
 
     /**
+     * Get all available resources
+     */
+    public function index(): JsonResponse
+    {
+        return response()->json($this->resources->getAll());
+    }
+
+    /**
      * Handle resource requests
      */
     public function show(Request $request, string $keyword): JsonResponse

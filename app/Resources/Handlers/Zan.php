@@ -9,6 +9,11 @@ use Illuminate\Support\Str;
 
 class Zan
 {
+    public function getResourceList(): array
+    {
+        return [];
+    }
+
     public function resolve(string $keyword): ?ResourceResponse
     {
         $triggerKeywords = ['赞美诗网', '赞美诗歌', '赞美诗', '赞美', '赞'];

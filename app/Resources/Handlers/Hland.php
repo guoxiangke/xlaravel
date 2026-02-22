@@ -9,6 +9,17 @@ use Illuminate\Support\Str;
 
 class Hland
 {
+    public function getResourceList(): array
+    {
+        return [
+            ['keyword' => 'hl46436', 'title' => '《灵魂幸存者》杨腓力（合集）'],
+            ['keyword' => '78201', 'title' => '历史的轨迹二千年史(祁伯尔)'],
+            ['keyword' => '78202', 'title' => '贤德的妻子(玛莎·佩斯)'],
+            ['keyword' => '78203', 'title' => '中国家庭教会史(王怡)'],
+            ['keyword' => '78204', 'title' => '讲道与讲道的人(钟马田)'],
+        ];
+    }
+
     public function resolve(string $keyword): ?ResourceResponse
     {
         $albums = [

@@ -9,6 +9,15 @@ use Illuminate\Support\Str;
 
 class PastorLu
 {
+    public function getResourceList(): array
+    {
+        return [
+            ['keyword' => '801', 'title' => '卢牧师日讲'],
+            ['keyword' => '802', 'title' => '卢牧师主日信息'],
+            ['keyword' => '808', 'title' => '卢牧师带你读新约'],
+        ];
+    }
+
     public function resolve(string $keyword): ?ResourceResponse
     {
         $offset = substr($keyword, 3) ?: 0;

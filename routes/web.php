@@ -11,6 +11,9 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 // Resources API route
+Route::get('/resources/all', [App\Http\Controllers\ResourceController::class, 'index'])
+    ->name('resources.index');
+
 Route::get('/resources/{keyword}', [App\Http\Controllers\ResourceController::class, 'show'])
     ->where('keyword', '.*')
     ->name('resources.show');

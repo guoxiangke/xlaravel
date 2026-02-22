@@ -9,6 +9,21 @@ use Illuminate\Support\Str;
 
 class Tingdao
 {
+    public function getResourceList(): array
+    {
+        $list = [];
+        $albums = $this->getAlbums();
+        foreach ($albums as $index => $album) {
+            $keyword = 't' . str_pad($index + 1, 3, '0', STR_PAD_LEFT);
+            $list[] = [
+                'keyword' => $keyword,
+                'title' => $album['title'],
+            ];
+        }
+
+        return $list;
+    }
+
     public function resolve(string $keyword): ?ResourceResponse
     {
         // t001-t369+001

@@ -6,6 +6,13 @@ use App\Resources\ResourceResponse;
 
 class Mbc
 {
+    public function getResourceList(): array
+    {
+        return [
+            ['keyword' => 'mbc', 'title' => '慕安德烈每日靈修签到'],
+        ];
+    }
+
     public function resolve(string $keyword): ?ResourceResponse
     {
         if ($keyword == 'mbc') {

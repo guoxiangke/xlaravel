@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\Http;
 
 final class BibleProject
 {
+    public function getResourceList(): array
+    {
+        return [
+            ['keyword' => '783', 'title' => 'Bible Project'],
+        ];
+    }
+
     public function resolve(string $keyword): mixed
     {
         // 783 bibleproject 106! =》115！

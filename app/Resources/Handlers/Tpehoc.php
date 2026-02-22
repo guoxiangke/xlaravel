@@ -10,6 +10,21 @@ use Illuminate\Support\Str;
 
 class Tpehoc
 {
+    public function getResourceList(): array
+    {
+        return [
+            ['keyword' => '799', 'title' => '恩典365'],
+            ['keyword' => '798', 'title' => '罗门,门徒训练'],
+            ['keyword' => '797', 'title' => '罗门,教牧辅导'],
+            ['keyword' => '795', 'title' => '欧亨利'],
+            ['keyword' => '794', 'title' => '救恩之聲 有聲書'],
+            ['keyword' => '793', 'title' => '為兒女禱告40天'],
+            ['keyword' => '792', 'title' => '基督教要义-导读'],
+            ['keyword' => '785', 'title' => '古德恩系統神學導讀'],
+            ['keyword' => '781', 'title' => '新媒体宣教'],
+        ];
+    }
+
     public function resolve(string $keyword): ?ResourceResponse
     {
         if ($keyword == '799') {

@@ -8,6 +8,32 @@ use Illuminate\Support\Facades\Http;
 
 class PastorJiang
 {
+    public function getResourceList(): array
+    {
+        $list = [
+            ['keyword' => '900', 'title' => '最新更新'],
+        ];
+
+        $allPlayList = $this->getAllPlaylist();
+        $total = count($allPlayList);
+
+        foreach ($allPlayList as $index => $playlist) {
+            // Logic: playlistIndex = count - (playlistNumber - 900)
+            // playlistNumber - 900 = count - playlistIndex
+            // playlistNumber = count - playlistIndex + 900
+            $keyword = 900 + ($total - $index);
+            $list[] = [
+                'keyword' => (string) $keyword,
+                'title' => $playlist['title'],
+            ];
+        }
+        
+        // Sort by keyword to be nice
+        usort($list, fn ($a, $b) => $a['keyword'] <=> $b['keyword']);
+
+        return $list;
+    }
+
     public function resolve(string $keyword): ?ResourceResponse
     {
         if ($keyword == 900) {

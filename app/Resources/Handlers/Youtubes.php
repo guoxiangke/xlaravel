@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Cache;
 
 class Youtubes
 {
+    public function getResourceList(): array
+    {
+        return [];
+    }
+
     public function resolve(string $keyword): ?ResourceResponse
     {
         if (preg_match('/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|video\/|shorts\/|live\/))([\w-]{11,})/', $keyword, $matches)) {
