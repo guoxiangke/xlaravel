@@ -61,6 +61,7 @@ it('can resolve keywords from all handlers', function (string $keyword, string $
     ['713', 'music'],
     ['714', 'music'],
     // LyAudio Programs
+    ['600', 'text'], // Test the list generation
     ['601', 'music'],
     ['602', 'music'],
     ['603', 'music'],

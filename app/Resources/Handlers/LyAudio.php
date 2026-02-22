@@ -136,13 +136,24 @@ class LyAudio
 
     private function getProgramList(): ResourceResponse
     {
-        $grouped = collect(self::PROGRAMS)->groupBy('category');
+        $categories = [
+            '生活智慧',
+            '少儿家庭',
+            '诗歌音乐',
+            '生命成长',
+            '圣经讲解',
+            '课程训练',
+            '其他语言',
+        ];
+
         $content = '';
 
-        foreach ($grouped as $category => $items) {
+        foreach ($categories as $category) {
             $content .= "====={$category}=====\n";
-            foreach ($items as $key => $item) {
-                $content .= "【{$key}】{$item['title']}\n";
+            foreach (self::PROGRAMS as $key => $program) {
+                if (($program['category'] ?? '') === $category) {
+                    $content .= "【{$key}】{$program['title']}\n";
+                }
             }
         }
 
