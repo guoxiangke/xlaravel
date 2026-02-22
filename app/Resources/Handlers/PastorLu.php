@@ -13,7 +13,6 @@ class PastorLu
     {
         return [
             ['keyword' => '801', 'title' => '卢牧师日讲'],
-            ['keyword' => '802', 'title' => '卢牧师主日信息'],
             ['keyword' => '808', 'title' => '卢牧师带你读新约'],
         ];
     }
@@ -25,7 +24,6 @@ class PastorLu
 
         return match ($baseKeyword) {
             '801' => $this->getDailyMessage(),
-            '802' => $this->getLastSundayMessage(),
             '808' => $this->getNewTestamentReading($offset),
             default => null,
         };
@@ -73,39 +71,6 @@ class PastorLu
         }
     }
 
-    private function getLastSundayMessage(): ?ResourceResponse
-    {
-        try {
-            $data = $this->getLastSundayData();
-            if (! $data) {
-                return null;
-            }
-
-            $vid = $data['data']['vid'];
-            $data['data']['url'] = config('x-resources.r2_share_video').'/@pastorpaulqiankunlu618/'.$vid.'.mp4';
-
-            // Create audio version
-            $m4a = config('x-resources.r2_share_audio').'/@pastorpaulqiankunlu618/'.$vid.'.m4a';
-            $audioResponse = ResourceResponse::music([
-                'url' => $m4a,
-                'title' => $data['data']['title'],
-                'description' => $data['data']['description'],
-                'image' => $data['data']['image'],
-                'vid' => $vid,
-            ]);
-
-            $videoResponse = ResourceResponse::link(
-                $data['data'],
-                [],
-                $audioResponse
-            );
-
-            return $videoResponse;
-
-        } catch (\Exception $e) {
-            return null;
-        }
-    }
 
     private function getNewTestamentReading(string $offset): ?ResourceResponse
     {
@@ -214,50 +179,4 @@ class PastorLu
         return $data;
     }
 
-    private function getLastSundayData(): ?array
-    {
-        $cacheKey = 'xbot.keyword.PastorLu.lastSunday';
-        $data = Cache::get($cacheKey);
-
-        if (! $data) {
-            try {
-                $response = Http::get('https://www.youtube.com/@pastorpaulqiankunlu618/videos');
-                $html = $response->body();
-
-                $re = '#vi/([^/]+).*?"text":"(.*?)"#';
-                preg_match_all($re, $html, $matches);
-
-                // Find Sunday message
-                foreach ($matches[2] as $key => $value) {
-                    if (Str::containsAll($value, ['主日信息'])) {
-                        $vid = $matches[1][$key];
-                        $title = $value;
-                        break;
-                    }
-                }
-
-                if (! isset($vid)) {
-                    return null;
-                }
-
-                $image = 'https://r2.savefamily.net/uPic/2023/Amn09V.jpg';
-                $data = [
-                    'type' => 'link',
-                    'data' => [
-                        'title' => $title,
-                        'description' => '路牧师主日信息 © 2026',
-                        'image' => $image,
-                        'vid' => $vid,
-                    ],
-                ];
-
-                Cache::put($cacheKey, $data, 7200); // 2 hours cache
-
-            } catch (\Exception $e) {
-                return null;
-            }
-        }
-
-        return $data;
-    }
 }
