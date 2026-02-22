@@ -10,7 +10,9 @@ class ResourceController extends Controller
 {
     public function __construct(
         private Resources $resources
-    ) {}
+        )
+    {
+    }
 
     /**
      * Get all available resources
@@ -35,5 +37,22 @@ class ResourceController extends Controller
         }
 
         return response()->json($resource);
+    }
+
+    /**
+     * Get all resources for a specific handler
+     */
+    public function handlerIndex(string $handler): JsonResponse
+    {
+        $list = $this->resources->getByHandler($handler);
+
+        if (empty($list)) {
+            return response()->json([
+                'error' => 'Handler not found or empty',
+                'handler' => $handler,
+            ], 404);
+        }
+
+        return response()->json($list);
     }
 }

@@ -157,11 +157,12 @@ class Beta
                 ['title' => '中風的滑鼠', 'file' => '20180313113950.mp3'],
             ];
             $image = 'https://www.vos.org.tw/Datafile/Icon/20180320152534135.png';
-            $index = now()->format('z') % 72;
+            $total = count($items);
+            $index = now()->format('z') % $total;
             
             return ResourceResponse::music([
                 'url' => $prefix . $items[$index]['file'],
-                'title' => '('.($index + 1)."/73)".$title,
+                'title' => '('.($index + 1)."/{$total})".$title,
                 'description' => $items[$index]['title'] . " " . $desc,
                 'image' => $image,
             ], ['metric' => 'Tpehoc', 'keyword' => $keyword]);
