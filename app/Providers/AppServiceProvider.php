@@ -15,7 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(\Madcoda\Youtube\Youtube::class, function ($app) {
+            return new \Madcoda\Youtube\Youtube(['key' => config('services.youtube.api_key')]);
+        });
     }
 
     /**
