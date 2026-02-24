@@ -76,7 +76,7 @@ class Hland
 
             if (! $data) {
                 try {
-                    $url = "https://pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/hland/{$albumId}.json";
+                    $url = config('x-resources.r2_pub_domain')."/hland/{$albumId}.json";
                     $json = Http::get($url)->json();
 
                     if (empty($json) || ! isset($json[$index])) {

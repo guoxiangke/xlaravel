@@ -44,7 +44,7 @@ class Tingdao
                 $album = $albums[$computedId];
 
                 $id = $album['id'];
-                $url = "https://pub-6de883f3fd4a43c28675e9be668042c2.r2.dev/{$id}/{$id}.json";
+                $url = config('x-resources.r2_tingdao_domain')."/{$id}/{$id}.json";
 
                 try {
                     $response = Http::get($url);

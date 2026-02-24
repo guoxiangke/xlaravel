@@ -80,24 +80,41 @@ class Fwd
                 'title' => '分享-'.$date,
                 'description' => $descC,
                 'image' => $image,
+            ], [
+                'metric' => 'Fwd',
+                'keyword' => '789',
+                'type' => 'audio',
             ]);
 
             // 根据原逻辑：周六日只发c，或者默认为 additionc
             // 原代码：'addition' => $additionc
             return ResourceResponse::text([
                 'content' => $textDescD,
-            ], [], $additionC);
+            ], [
+                'metric' => 'Fwd',
+                'keyword' => '789',
+                'type' => 'text',
+            ], $additionC);
 
         } catch (\Exception $e) {
-            return ResourceResponse::text(['content' => '获取数据失败，请稍后重试']);
+            return ResourceResponse::text(['content' => '获取数据失败，请稍后重试'], [
+                'metric' => 'Fwd',
+                'keyword' => '789',
+                'type' => 'error',
+            ]);
         }
     }
 
     private function getSundayService(): ?ResourceResponse
     {
         try {
-            $response = Http::get('https://www.youtube.com/@fwdforwardchurch7991/streams');
-            $html = $response->body();
+            $cacheKey = 'fwd_sunday_service_streams';
+            $tomorrow = now('Asia/Shanghai')->addDay()->startOfDay();
+            $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
+            
+            $html = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
+                return Http::get('https://www.youtube.com/@fwdforwardchurch7991/streams')->body();
+            });
 
             $re = '/"text":"FWDFC ([^"]+).*?"videoId":"([^"]+)"/';
             preg_match_all($re, $html, $matches);
@@ -116,7 +133,7 @@ class Fwd
 
             $channelDomain = config('x-resources.r2_share_audio').'/@fwdforwardchurch7991/';
             $url = $channelDomain.$vid.'.mp4';
-            $image = 'https://r2.savefamily.net/uPic/2023/IeDDmx.jpg';
+            $image = config('x-resources.r2_share_audio').'/uPic/2023/IeDDmx.jpg';
 
             $descs = explode('【', $title);
 
@@ -126,6 +143,10 @@ class Fwd
                 'description' => $descs[0],
                 'image' => $image,
                 'vid' => $vid,
+            ], [
+                'metric' => 'Fwd',
+                'keyword' => '803',
+                'type' => 'video',
             ]);
 
             // Add audio version
@@ -136,6 +157,10 @@ class Fwd
                 'description' => $descs[0],
                 'image' => $image,
                 'vid' => $vid,
+            ], [
+                'metric' => 'Fwd',
+                'keyword' => '803',
+                'type' => 'audio',
             ]);
 
             $videoResponse->addition = $audioResponse;
@@ -150,8 +175,13 @@ class Fwd
     private function getPrayerMeeting(): ?ResourceResponse
     {
         try {
-            $response = Http::get('https://www.youtube.com/@fwdforwardchurch7991/streams');
-            $html = $response->body();
+            $cacheKey = 'fwd_prayer_meeting_streams';
+            $tomorrow = now('Asia/Shanghai')->addDay()->startOfDay();
+            $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
+            
+            $html = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
+                return Http::get('https://www.youtube.com/@fwdforwardchurch7991/streams')->body();
+            });
 
             $re = '/"text":"FWDFC ([^"]+).*?"videoId":"([^"]+)"/';
             preg_match_all($re, $html, $matches);
@@ -170,7 +200,7 @@ class Fwd
 
             $channelDomain = config('x-resources.r2_share_audio').'/@fwdforwardchurch7991/';
             $url = $channelDomain.$vid.'.mp4';
-            $image = 'https://r2.savefamily.net/uPic/2023/IeDDmx.jpg';
+            $image = config('x-resources.r2_share_audio').'/uPic/2023/IeDDmx.jpg';
 
             $videoResponse = ResourceResponse::link([
                 'url' => $url,
@@ -178,6 +208,10 @@ class Fwd
                 'description' => $title,
                 'image' => $image,
                 'vid' => $vid,
+            ], [
+                'metric' => 'Fwd',
+                'keyword' => '804',
+                'type' => 'video',
             ]);
 
             // Add audio version
@@ -188,6 +222,10 @@ class Fwd
                 'description' => $title,
                 'image' => $image,
                 'vid' => $vid,
+            ], [
+                'metric' => 'Fwd',
+                'keyword' => '804',
+                'type' => 'audio',
             ]);
 
             $videoResponse->addition = $audioResponse;
@@ -207,17 +245,26 @@ class Fwd
         }
 
         try {
-            $response = Http::get('https://x-resources.vercel.app/youtube/get-last-by-playlist/PLLDxN82mMW3NrAoY-Nm6JYsk6ib5_5AZf');
-            if ($response->failed()) {
+            $cacheKey = 'fwd_sunday_message_playlist';
+            $tomorrow = now('Asia/Shanghai')->addDay()->startOfDay();
+            $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
+            
+            $matches = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
+                $response = Http::get('https://x-resources.vercel.app/youtube/get-last-by-playlist/PLLDxN82mMW3NrAoY-Nm6JYsk6ib5_5AZf');
+                if ($response->failed()) {
+                    return null;
+                }
+                return $response->json();
+            });
+            
+            if (!$matches) {
                 return null;
             }
-
-            $matches = $response->json();
             $vid = $matches['contentDetails']['videoId'];
             $title = $matches['snippet']['title'];
             $channelDomain = config('x-resources.r2_share_audio').'/@fwdforwardchurch7991/';
             $url = $channelDomain.$vid.'.mp4';
-            $image = 'https://r2.savefamily.net/uPic/2023/IeDDmx.jpg';
+            $image = config('x-resources.r2_share_audio').'/uPic/2023/IeDDmx.jpg';
 
             $titleArray = explode('｜', $title);
             $mainTitle = $titleArray[0];
@@ -230,6 +277,10 @@ class Fwd
                 'description' => $description,
                 'image' => $image,
                 'vid' => $vid,
+            ], [
+                'metric' => 'Fwd',
+                'keyword' => '806',
+                'type' => 'video',
             ]);
 
             // Add audio version
@@ -240,6 +291,10 @@ class Fwd
                 'description' => $description,
                 'image' => $image,
                 'vid' => $vid,
+            ], [
+                'metric' => 'Fwd',
+                'keyword' => '806',
+                'type' => 'audio',
             ]);
 
             $videoResponse->addition = $audioResponse;

@@ -147,7 +147,7 @@ it('can resolve keywords from all handlers', function (string $keyword, string $
     ['789', 'text'],
     ['803', 'link'],
     ['hl46436', 'music'],
-    ['mbc', 'link'],
+    ['791', 'link'], // Beta Handler - migrated from MBC
     ['odb', 'music'],
     ['900', 'music'],
     ['801', 'music'],

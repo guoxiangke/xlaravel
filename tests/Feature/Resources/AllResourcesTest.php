@@ -25,7 +25,7 @@ it('can retrieve all resources grouped by handler', function () {
         'Ren' => [
             '*' => ['keyword', 'title']
         ],
-        'Tpehoc' => [
+        'Beta' => [
             '*' => ['keyword', 'title']
         ],
     ]);

@@ -48,18 +48,31 @@ class PastorLu
                 'description' => $data['data']['description'],
                 'image' => $data['data']['image'],
                 'vid' => $vid,
+            ], [
+                'metric' => 'PastorLu',
+                'keyword' => '801',
+                'type' => 'audio',
             ]);
 
             $videoResponse = ResourceResponse::link(
                 $data['data'],
-                [],
+                [
+                    'metric' => 'PastorLu',
+                    'keyword' => '801',
+                    'type' => 'video',
+                ],
                 $audioResponse
             );
 
             // Return audio first with video as addition (as per original logic)
             // But avoid circular reference by not setting videoResponse's addition
             $videoResponseForAddition = ResourceResponse::link(
-                $data['data']
+                $data['data'],
+                [
+                    'metric' => 'PastorLu',
+                    'keyword' => '801',
+                    'type' => 'video',
+                ]
                 // No addition to avoid circular reference
             );
             $audioResponse->addition = $videoResponseForAddition;
@@ -82,7 +95,7 @@ class PastorLu
                 $day = $offset;
             }
 
-            $url = 'https://r2.savefamily.net/luNT.json';
+            $url = config('x-resources.r2_share_audio').'/luNT.json';
             $json = Http::get($url)->json();
 
             if (! isset($json[$day])) {
@@ -101,6 +114,10 @@ class PastorLu
                 'description' => '卢牧师带你读新约 © 2026',
                 'image' => $image,
                 'vid' => $vid,
+            ], [
+                'metric' => 'PastorLu',
+                'keyword' => '808',
+                'type' => 'video',
             ]);
 
             // Add audio version
@@ -111,6 +128,10 @@ class PastorLu
                 'description' => '卢牧师带你读新约 © 2026',
                 'image' => $image,
                 'vid' => $vid,
+            ], [
+                'metric' => 'PastorLu',
+                'keyword' => '808',
+                'type' => 'audio',
             ]);
 
             $videoResponse->addition = $audioResponse;

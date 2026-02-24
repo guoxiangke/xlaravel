@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use App\Jobs\InfluxQueue;
 
@@ -99,7 +100,13 @@ Route::get('/redirect', function (Request $request) {
 });
 
 Route::get('/go/pastorlu', function (Request $request) {
-    $res = Http::get("https://x-resources.vercel.app/resources/801")->json();
+    $cacheKey = 'pastorlu_redirect_url';
+    $tomorrow = now('Asia/Shanghai')->addDay()->startOfDay();
+    $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
+    
+    $res = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
+        return Http::get("https://x-resources.vercel.app/resources/801")->json();
+    });
     return redirect()->away($res['data']['url'], $status = 302);
 });
 

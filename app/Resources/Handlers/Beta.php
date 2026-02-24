@@ -211,13 +211,13 @@ class Beta
             
             if (!$items) {
                 try {
-                    $url = "https://pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/playlist/{$playListId}/{$playListId}.txt";
+                    $url = config('x-resources.r2_pub_domain')."/playlist/{$playListId}/{$playListId}.txt";
                     $response = Http::get($url);
                     $ids = explode(PHP_EOL, $response->body());
                     $items = [];
                     foreach ($ids as $key => $yid) {
                         if (!$yid) continue;
-                        $url = "https://pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/playlist/{$playListId}/{$yid}.info.json";
+                        $url = config('x-resources.r2_pub_domain')."/playlist/{$playListId}/{$yid}.info.json";
                         
                         $json = Http::get($url)->json();
                         $key = null;
@@ -406,7 +406,7 @@ class Beta
                 'title' => '古德恩系統神學導讀 (張麟至牧師)',
                 'description' => "(" . ($index + 1) . "/{$total})" . $title,
                 'image' => 'https://www.alopen.org/portals/0/Images/PastorPaulChangPhoto.jpg',
-            ]);
+            ], ['metric' => 'Tpehoc', 'keyword' => $keyword, 'type' => 'video']);
 
             return ResourceResponse::music([
                 'url' => $mp4Url,
@@ -552,7 +552,7 @@ class Beta
                         'title' => '恩典365',
                         'description' => $Ymd,
                         'image' => 'https://wsrv.nl/?url=tpehoc.org.tw/wp-content/uploads/2024/10/365-615x346.png',
-                    ]);
+                    ], ['metric' => 'Tpehoc', 'keyword' => $keyword, 'type' => 'video']);
 
                     $date = now()->format('Ymd');
                     $audioUrl = config('x-resources.r2_share_audio')."/799/{$date}.mp3";
@@ -595,7 +595,7 @@ class Beta
             $index = now()->subDay()->format('z') % $total;
             $item = $items[$index];
             $titles = explode('：', $item);
-            $mp3 = "http://www.jtoday.org/wp-content/uploads/2022/08/mavmm0".str_pad($index + 1, 2, '0', STR_PAD_LEFT).".mp3";
+            $mp3 = config('x-resources.jtoday_domain')."/wp-content/uploads/2022/08/mavmm0".str_pad($index + 1, 2, '0', STR_PAD_LEFT).".mp3";
 
             return ResourceResponse::music([
                 'url' => $mp3,

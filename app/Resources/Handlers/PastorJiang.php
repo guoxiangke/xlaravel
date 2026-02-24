@@ -38,7 +38,7 @@ class PastorJiang
     {
         if ($keyword == 900) {
             $who = '@jiangyongliu';
-            $baseUrl = 'https://pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/youtube_channels/latest_update';
+            $baseUrl = config('x-resources.r2_pub_domain').'/youtube_channels/latest_update';
 
             return $this->fetchVideoData($baseUrl, $who, 'streams', $keyword);
         }
