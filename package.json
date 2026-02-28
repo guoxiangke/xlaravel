@@ -3,6 +3,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "prebuild": "cp vendor/livewire/flux/dist/flux.css resources/css/flux.css 2>/dev/null || true",
         "build": "vite build",
         "dev": "vite"
     },
