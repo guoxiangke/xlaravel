@@ -130,14 +130,24 @@ class Lts
     }
 
     /**
+     * 去除code中的数字前缀（用于生成目录路径）
+     */
+    private function getCleanCode(string $code): string
+    {
+        // 去除末尾的数字，如 mavoe1 -> mavoe, mavcy1 -> mavcy
+        return preg_replace('/\d+$/', '', $code);
+    }
+
+    /**
      * @param  array{name: string, code: string, count: int, description: string}  $course
      */
     private function buildEpisodeResponse(int $digit, int $pos, array $course, int $episode): ResourceResponse
     {
         $ep = str_pad((string) $episode, 2, '0', STR_PAD_LEFT);
+        $cleanCode = $this->getCleanCode($course['code']);
 
-        // {cdn}/lts/{code}/{code}{ep}.mp3  ← 与 Route /storage/ly/audio/{code}/{day}.mp3 对应
-        $url = self::CDN_BASE.$course['code'].'/'.$course['code'].$ep.'.mp3';
+        // {cdn}/lts/{cleanCode}/{code}{ep}.mp3  ← 目录名去掉数字前缀，文件名保持原code
+        $url = self::CDN_BASE.$cleanCode.'/'.$course['code'].$ep.'.mp3';
 
         $coverCode = self::CATEGORY_COVERS[self::DIGIT_TO_CATEGORY[$digit]] ?? 'ltsnop';
         $image = self::COVER_DOMAIN.'/ly/image/cover/'.$coverCode.'.jpg';
@@ -153,6 +163,30 @@ class Lts
             'description' => $description,
             'image' => $image,
         ]);
+    }
+
+    /**
+     * 根据课程名称智能分类（因为API返回的category都是noTagName）
+     */
+    private function categorizeCourse(string $name, string $code): string
+    {
+        // 专题特辑：特辑、培灵会、周特辑等
+        if (preg_match('/特辑|培灵会|院庆|开学周|毕业周|圣诞节|复活节|春节|宣教周|关怀|探访|民间|哀伤|临终|无神论|教牧特辑/', $name)) {
+            return '专题特辑';
+        }
+        
+        // 启航课程（基础课程）：婚姻与家庭、新约浅说、旧约浅说、基要真理、基本研经法、耶稣生平、信仰与生活、事奉装备、祷告生活等
+        if (preg_match('/婚姻与家庭|新约浅说|旧约浅说|基要真理|基本研经法|耶稣生平|信仰与生活|事奉装备|祷告生活|学习锦囊/', $name)) {
+            return '启航课程';
+        }
+        
+        // 普及进深：带有"论"字结尾的神学课程、高级圣经研究等
+        if (preg_match('/基督论|末世论|教会论|圣经论|神论|救恩论|启示论|圣经神学|旧约神学|新约神学|释经学|释经与讲道|领袖训练|教牧学|教牧辅导|崇拜学|差传神学|进深讲道学|灵命培育|转变中的家庭牧养|认识小组教会|整全使命|金龄事工|近代神学家|灵修操练/', $name)) {
+            return '普及进深';
+        }
+        
+        // 普及本科：其余的正规课程
+        return '普及本科';
     }
 
     /**
@@ -187,8 +221,8 @@ class Lts
                     continue;
                 }
 
-                $raw = $item['category'] ?? '';
-                $category = in_array($raw, $validCategories, true) ? $raw : '专题特辑';
+                // 使用智能分类算法替代API的category字段
+                $category = $this->categorizeCourse($item['name'], $item['code']);
 
                 if (count($buckets[$category]) >= 99) {
                     continue; // 每分类最多 99 门
