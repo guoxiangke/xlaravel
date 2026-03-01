@@ -16,12 +16,20 @@ class Lts
 
     private const CACHE_KEY = 'lts_courses';
 
-    private const GQL_QUERY = '{ data: lts_metas { id name code count category } }';
+    private const GQL_QUERY = '{ data: lts_metas { id name code count category description } }';
 
-    /** 分类顺序（决定菜单排列与封面图） */
-    private const CATEGORY_ORDER = ['专题特辑', '启航课程', '普及本科', '普及进深'];
+    /**
+     * 分类首位数字 → 分类名称
+     * 关键字格式：x00 = 菜单, x01–x99 = 课程(轮播), x{pos:02}{ep:02} = 指定集
+     */
+    private const DIGIT_TO_CATEGORY = [
+        2 => '专题特辑',
+        3 => '启航课程',
+        4 => '普及本科',
+        5 => '普及进深',
+    ];
 
-    /** 各分类对应封面图片的 code */
+    /** 分类 → 封面图 code */
     private const CATEGORY_COVERS = [
         '专题特辑' => 'ltsnop',
         '启航课程' => 'ltsnp',
@@ -34,113 +42,126 @@ class Lts
      */
     public function getResourceList(): array
     {
-        return array_values(array_map(
-            fn (array $course) => [
-                'keyword' => '900'.$course['id'],
-                'title' => $course['name'],
-            ],
-            $this->getCourses()
-        ));
+        $list = [];
+        $catalog = $this->getCatalog();
+
+        foreach (self::DIGIT_TO_CATEGORY as $digit => $category) {
+            $courses = $catalog[$category] ?? [];
+
+            foreach ($courses as $pos => $course) {
+                $list[] = [
+                    'keyword' => $digit.str_pad((string) $pos, 2, '0', STR_PAD_LEFT),
+                    'title' => $course['name'],
+                ];
+            }
+        }
+
+        return $list;
     }
 
     public function resolve(string $keyword): ?ResourceResponse
     {
-        if (! str_starts_with($keyword, '900')) {
+        $len = strlen($keyword);
+
+        // 只处理 3 位或 5 位纯数字，首位必须是 2–5
+        if (! ctype_digit($keyword) || ! in_array($len, [3, 5], true)) {
             return null;
         }
 
-        $rest = substr($keyword, 3);
+        $digit = (int) $keyword[0];
+        $category = self::DIGIT_TO_CATEGORY[$digit] ?? null;
 
-        // '900' 单独输入 → 显示课程目录
-        if ($rest === '') {
-            return $this->getCourseMenu();
-        }
-
-        if (! ctype_digit($rest)) {
+        if ($category === null) {
             return null;
         }
 
-        $courses = $this->getCourses();
-        $len = strlen($rest);
+        $catalog = $this->getCatalog();
+        $courses = $catalog[$category] ?? [];
 
-        // 3 位及以上：优先尝试「课程ID + 2位集数」格式
-        // 例：900101 → courseId=1, ep=01；900140 → courseId=1, ep=40(超出范围) → 跳过
-        if ($len >= 3) {
-            $courseId = (int) substr($rest, 0, $len - 2);
-            $episode = (int) substr($rest, -2);
+        // ── 3 位：x00 = 菜单，x01–x99 = 课程轮播 ──────────────────────────
+        if ($len === 3) {
+            $pos = (int) substr($keyword, 1);
 
-            if ($courseId >= 1 && $episode >= 1) {
-                $course = $courses[$courseId] ?? null;
-
-                if ($course !== null && $episode <= $course['count']) {
-                    return $this->buildEpisodeResponse($courseId, $course, $episode);
-                }
+            if ($pos === 0) {
+                return $this->buildCategoryMenu($digit, $category, $courses);
             }
-        }
 
-        // 整段数字作为课程ID → 按日期轮播集数（day-of-year 取模）
-        $courseId = (int) $rest;
-        $course = $courses[$courseId] ?? null;
+            $course = $courses[$pos] ?? null;
 
-        if ($course !== null && $course['count'] > 0) {
+            if ($course === null) {
+                return null;
+            }
+
             $episode = (date('z') % $course['count']) + 1;
 
-            return $this->buildEpisodeResponse($courseId, $course, $episode);
+            return $this->buildEpisodeResponse($digit, $pos, $course, $episode);
         }
 
-        return null;
+        // ── 5 位：x{pos:02}{ep:02} = 指定集 ────────────────────────────────
+        $pos = (int) substr($keyword, 1, 2);
+        $episode = (int) substr($keyword, 3, 2);
+
+        if ($pos < 1 || $episode < 1) {
+            return null;
+        }
+
+        $course = $courses[$pos] ?? null;
+
+        if ($course === null || $episode > $course['count']) {
+            return null;
+        }
+
+        return $this->buildEpisodeResponse($digit, $pos, $course, $episode);
     }
 
-    private function getCourseMenu(): ResourceResponse
+    /**
+     * @param  array<int, array{name: string, code: string, count: int, description: string}>  $courses
+     */
+    private function buildCategoryMenu(int $digit, string $category, array $courses): ResourceResponse
     {
-        $grouped = $this->groupByCategory($this->getCourses());
-        $content = '';
+        $content = "=====【{$category}】=====\n";
 
-        foreach (self::CATEGORY_ORDER as $category) {
-            $courses = $grouped[$category] ?? [];
-
-            if (empty($courses)) {
-                continue;
-            }
-
-            $content .= "=====【{$category}】=====\n";
-
-            foreach ($courses as $id => $course) {
-                $content .= "【900{$id}】{$course['name']}（{$course['count']}集）\n";
-            }
+        foreach ($courses as $pos => $course) {
+            $key = $digit.str_pad((string) $pos, 2, '0', STR_PAD_LEFT);
+            $content .= "【{$key}】{$course['name']}（{$course['count']}集）\n";
         }
 
         return ResourceResponse::text(['content' => trim($content)]);
     }
 
     /**
-     * 按分类顺序分组，noTagName 归入「专题特辑」。
-     *
-     * @param  array<int, array{id: int, name: string, code: string, count: int, category: string}>  $courses
-     * @return array<string, array<int, array{id: int, name: string, code: string, count: int, category: string}>>
+     * @param  array{name: string, code: string, count: int, description: string}  $course
      */
-    private function groupByCategory(array $courses): array
+    private function buildEpisodeResponse(int $digit, int $pos, array $course, int $episode): ResourceResponse
     {
-        $grouped = array_fill_keys(self::CATEGORY_ORDER, []);
+        $ep = str_pad((string) $episode, 2, '0', STR_PAD_LEFT);
 
-        foreach ($courses as $id => $course) {
-            $category = in_array($course['category'], self::CATEGORY_ORDER, true)
-                ? $course['category']
-                : '专题特辑';
+        // {cdn}/lts/{code}/{code}{ep}.mp3  ← 与 Route /storage/ly/audio/{code}/{day}.mp3 对应
+        $url = self::CDN_BASE.$course['code'].'/'.$course['code'].$ep.'.mp3';
 
-            $grouped[$category][$id] = $course;
-        }
+        $coverCode = self::CATEGORY_COVERS[self::DIGIT_TO_CATEGORY[$digit]] ?? 'ltsnop';
+        $image = self::COVER_DOMAIN.'/ly/image/cover/'.$coverCode.'.jpg';
 
-        return $grouped;
+        $key = $digit.str_pad((string) $pos, 2, '0', STR_PAD_LEFT);
+        $description = $course['description'] !== ''
+            ? $course['description']
+            : "良友圣经学院 · 第{$episode}集，共{$course['count']}集";
+
+        return ResourceResponse::music([
+            'url' => $url,
+            'title' => "【{$key}】{$course['name']} {$ep}",
+            'description' => $description,
+            'image' => $image,
+        ]);
     }
 
     /**
-     * 从 GraphQL API 拉取课程列表，结果缓存至当天结束（次日自动清空）。
-     * API 失败时返回空数组，不写入缓存（下次请求重试）。
+     * 从 GraphQL API 拉取课程，按分类分组并分配位置编号（1–99）。
+     * 结果缓存至当天结束；API 失败返回空数组，不缓存。
      *
-     * @return array<int, array{id: int, name: string, code: string, count: int, category: string}>
+     * @return array<string, array<int, array{name: string, code: string, count: int, description: string}>>
      */
-    private function getCourses(): array
+    private function getCatalog(): array
     {
         $cached = Cache::get(self::CACHE_KEY);
 
@@ -154,7 +175,10 @@ class Lts
             ]);
 
             $items = $response->json('data.data', []);
-            $courses = [];
+            $validCategories = array_values(self::DIGIT_TO_CATEGORY);
+
+            // 先按分类分桶（保持 API 返回顺序）
+            $buckets = array_fill_keys($validCategories, []);
 
             foreach ($items as $item) {
                 $count = (int) $item['count'];
@@ -163,48 +187,41 @@ class Lts
                     continue;
                 }
 
-                $id = (int) $item['id'];
-                $rawCategory = $item['category'] ?? '';
+                $raw = $item['category'] ?? '';
+                $category = in_array($raw, $validCategories, true) ? $raw : '专题特辑';
 
-                // noTagName 或空值归入「专题特辑」
-                $category = in_array($rawCategory, self::CATEGORY_ORDER, true)
-                    ? $rawCategory
-                    : '专题特辑';
+                if (count($buckets[$category]) >= 99) {
+                    continue; // 每分类最多 99 门
+                }
 
-                $courses[$id] = [
-                    'id' => $id,
+                $buckets[$category][] = [
                     'name' => $item['name'],
                     'code' => $item['code'],
                     'count' => $count,
-                    'category' => $category,
+                    'description' => $item['description'] ?? '',
                 ];
             }
 
-            if (! empty($courses)) {
-                Cache::put(self::CACHE_KEY, $courses, now()->endOfDay());
+            // 重新索引为位置编号 1–N
+            $catalog = [];
+
+            foreach ($buckets as $category => $courses) {
+                $catalog[$category] = [];
+
+                foreach (array_values($courses) as $i => $course) {
+                    $catalog[$category][$i + 1] = $course;
+                }
             }
 
-            return $courses;
+            $isEmpty = array_reduce($catalog, fn ($carry, $c) => $carry && empty($c), true);
+
+            if (! $isEmpty) {
+                Cache::put(self::CACHE_KEY, $catalog, now()->endOfDay());
+            }
+
+            return $catalog;
         } catch (\Exception) {
             return [];
         }
-    }
-
-    /**
-     * @param  array{id: int, name: string, code: string, count: int, category: string}  $course
-     */
-    private function buildEpisodeResponse(int $courseId, array $course, int $episode): ResourceResponse
-    {
-        $ep = str_pad((string) $episode, 2, '0', STR_PAD_LEFT);
-        $url = self::CDN_BASE.$course['code'].$ep.'.mp3';
-        $coverCode = self::CATEGORY_COVERS[$course['category']] ?? self::CATEGORY_COVERS['专题特辑'];
-        $image = self::COVER_DOMAIN.'/ly/image/cover/'.$coverCode.'.jpg';
-
-        return ResourceResponse::music([
-            'url' => $url,
-            'title' => "【{$courseId}】{$course['name']} {$ep}",
-            'description' => "良友圣经学院 · 第{$episode}集，共{$course['count']}集",
-            'image' => $image,
-        ]);
     }
 }
