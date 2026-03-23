@@ -32,11 +32,43 @@ Route::get('/vids/download', function () {
     return Cache::pull($key, []);
 });
 
+// 主日讲道
+Route::get('/set/fwdlist/sendIsOn', function () {
+    $cacheKey = '806';
+    $data = date('Y-m-d H:i:s', strtotime('tomorrow'));
+    Cache::put($cacheKey, $data, strtotime('tomorrow') - time());
+    $data = Cache::get($cacheKey, false);
+
+    return [$data];
+});
+
 // 防失联2重备案域名跳转链接 go.url/s=share
 // 127.0.0.1:8000/s?url=https://google.com/404?query=s&tag=test
 // 127.0.0.1:8000/s?url=https://google.com/404?query=s%26tag=test
 // https://go2024.simai.life/s?url=https://r2.check-in-out.online/OVagt1.JPG
 // https://go.check-in-out.online/s?url=https://r2.check-in-out.online/OVagt1.JPG
+Route::get('/youtube/search-last-by-channel/{channelId}/{keyword}', function (string $channelId, string $keyword) {
+    $all = \Madcoda\Youtube\Facades\Youtube::searchChannelVideos($keyword, $channelId, 1, 'date');
+
+    return collect($all)->first();
+});
+
+Route::get('/youtube/{vid}', function (string $vid) {
+    return \Madcoda\Youtube\Facades\Youtube::getVideoInfo($vid);
+});
+
+Route::get('/youtube/get-last-by-playlist/{playlistId}', function (string $playlistId) {
+    $all = \App\Resources\Helpers\YouTubeHelper::getAllItemsByPlaylistId($playlistId);
+
+    return $all->last();
+});
+
+Route::get('/youtube/get-all-by-playlist/{playlistId}', function (string $playlistId) {
+    $all = \App\Resources\Helpers\YouTubeHelper::getAllItemsByPlaylistId($playlistId);
+
+    return $all->pluck('contentDetails.videoId');
+});
+
 Route::get('/s', function (Request $request) {
     $url = $request->query('url');
     $status = 302;
