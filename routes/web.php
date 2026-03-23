@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Http\Request;
 use App\Jobs\InfluxQueue;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,15 +15,22 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 // Resources API route
-Route::get('/resources/all', [App\Http\Controllers\ResourceController::class , 'index'])
+Route::get('/resources/all', [App\Http\Controllers\ResourceController::class, 'index'])
     ->name('resources.index');
 
-Route::get('/resources/all/{handler}', [App\Http\Controllers\ResourceController::class , 'handlerIndex'])
+Route::get('/resources/all/{handler}', [App\Http\Controllers\ResourceController::class, 'handlerIndex'])
     ->name('resources.handler_index');
 
-Route::get('/resources/{keyword}', [App\Http\Controllers\ResourceController::class , 'show'])
+Route::get('/resources/{keyword}', [App\Http\Controllers\ResourceController::class, 'show'])
     ->where('keyword', '.*')
     ->name('resources.show');
+
+// YouTube 待下载视频列表（取出并清空）
+Route::get('/vids/download', function () {
+    $key = 'youtube-vids-need-download';
+
+    return Cache::pull($key, []);
+});
 
 // 防失联2重备案域名跳转链接 go.url/s=share
 // 127.0.0.1:8000/s?url=https://google.com/404?query=s&tag=test
@@ -57,19 +64,20 @@ Route::get('/redirect', function (Request $request) {
     $url = $request->query('target');
     $status = 302;
     $ip = $request->header('x-forwarded-for') ?? $request->ip();
-    $parts = parse_url($url); //$parts['host']
+    $parts = parse_url($url); // $parts['host']
     // $paths = pathinfo($url); //mp3
     $parsedUrl = parse_url($url);
-    $headers = ['referer' => $parsedUrl['scheme'] . '://' . $parsedUrl['host']]; //strtok($url, '?')//remove ?q=xxx
+    $headers = ['referer' => $parsedUrl['scheme'].'://'.$parsedUrl['host']]; // strtok($url, '?')//remove ?q=xxx
 
-    $target = basename($url); //cc201221.mp3
+    $target = basename($url); // cc201221.mp3
 
     $tags = [];
-    if (isset($parts['query']))
+    if (isset($parts['query'])) {
         parse_str($parts['query'], $tags);
+    }
     $tags['host'] = $parts['host'];
     // measurement/metric
-    // $tags = http_build_query($data, '', ',');// category=603,bot=4    
+    // $tags = http_build_query($data, '', ',');// category=603,bot=4
 
     $fields = [];
     $fields['count'] = 1;
@@ -84,18 +92,20 @@ Route::get('/redirect', function (Request $request) {
         unset($tags['to']);
     }
     // ?_=1
-    if (isset($tags['_']))
+    if (isset($tags['_'])) {
         unset($tags['_']);
+    }
 
     $protocolLine = [
-        'name' => 'click', //action=click/listen/view/tap
+        'name' => 'click', // action=click/listen/view/tap
         'tags' => $tags,
-        'fields' => $fields
+        'fields' => $fields,
     ];
     // $protocolLine = $metric.$tags.' count=1i,target="'.$target.'",ip="'.$ip.'"';
     // ly-listen,category=603,bot=%E5%8F%8B4count=1i,target="ee230909.mp3"
     // dd($protocolLine,$parts,$url);
     InfluxQueue::dispatchAfterResponse($protocolLine);
+
     return redirect()->away($url, $status, $headers);
 });
 
@@ -103,11 +113,12 @@ Route::get('/go/pastorlu', function (Request $request) {
     $cacheKey = 'pastorlu_redirect_url';
     $tomorrow = now('Asia/Shanghai')->addDay()->startOfDay();
     $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
-    
+
     $res = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
-        return Http::get("https://x-resources.vercel.app/resources/801")->json();
+        return Http::get('https://x-resources.vercel.app/resources/801')->json();
     });
+
     return redirect()->away($res['data']['url'], $status = 302);
 });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';
