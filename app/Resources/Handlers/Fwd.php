@@ -33,7 +33,7 @@ class Fwd
 
     private function getDailyAudio(): ResourceResponse
     {
-        $whichDay = now();
+        $whichDay = now('Asia/Shanghai');
         $year = $whichDay->format('Y');
         $date = $whichDay->format('ymd');
 
@@ -49,21 +49,21 @@ class Fwd
             $url = 'https://docs.google.com/spreadsheets/u/0/d/1xIdXT4mTKHRulwJeHkzL_1dUuSsirnriGNHMvlOfdCc/htmlview/sheet?headers=true&gid=0';
             $response = $client->get($url);
             $html = (string) $response->getBody();
-            
+
             // 使用正则解析以避免本地库环境导致的 preg_match 错误
             preg_match_all('/<tr[^>]*>(.*?)<\/tr>/s', $html, $rows);
             $meta = [];
-            
+
             foreach ($rows[1] as $rowHtml) {
                 if (preg_match_all('/<td[^>]*>(.*?)<\/td>/s', $rowHtml, $tds)) {
                     if (count($tds[1]) >= 3) {
                         $cloumn1 = trim(strip_tags($tds[1][0])); // date
                         $cloumn2 = trim(strip_tags($tds[1][1])); // abc
                         $cloumn3 = trim(strip_tags($tds[1][2])); // desc
-                        
-                        $meta[$cloumn1 . $cloumn2] = $cloumn3;
+
+                        $meta[$cloumn1.$cloumn2] = $cloumn3;
                         if ($cloumn2 == 'c' && isset($tds[1][3])) {
-                            $meta[$cloumn1 . $cloumn2 . '.text'] = trim(strip_tags($tds[1][3]));
+                            $meta[$cloumn1.$cloumn2.'.text'] = trim(strip_tags($tds[1][3]));
                         }
                     }
                 }
@@ -111,7 +111,7 @@ class Fwd
             $cacheKey = 'fwd_sunday_service_streams';
             $tomorrow = now('Asia/Shanghai')->addDay()->startOfDay();
             $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
-            
+
             $html = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
                 return Http::get('https://www.youtube.com/@fwdforwardchurch7991/streams')->body();
             });
@@ -178,7 +178,7 @@ class Fwd
             $cacheKey = 'fwd_prayer_meeting_streams';
             $tomorrow = now('Asia/Shanghai')->addDay()->startOfDay();
             $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
-            
+
             $html = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
                 return Http::get('https://www.youtube.com/@fwdforwardchurch7991/streams')->body();
             });
@@ -248,16 +248,17 @@ class Fwd
             $cacheKey = 'fwd_sunday_message_playlist';
             $tomorrow = now('Asia/Shanghai')->addDay()->startOfDay();
             $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
-            
+
             $matches = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
                 $response = Http::get('https://x-resources.vercel.app/youtube/get-last-by-playlist/PLLDxN82mMW3NrAoY-Nm6JYsk6ib5_5AZf');
                 if ($response->failed()) {
                     return null;
                 }
+
                 return $response->json();
             });
-            
-            if (!$matches) {
+
+            if (! $matches) {
                 return null;
             }
             $vid = $matches['contentDetails']['videoId'];
