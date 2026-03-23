@@ -147,7 +147,7 @@ Route::get('/go/pastorlu', function (Request $request) {
     $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
 
     $res = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
-        return Http::get('https://x-resources.vercel.app/resources/801')->json();
+        return Http::get('https://xlaravel.vercel.app/resources/801')->json();
     });
 
     return redirect()->away($res['data']['url'], $status = 302);

@@ -250,7 +250,7 @@ class Fwd
             $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
 
             $matches = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
-                $response = Http::get('https://x-resources.vercel.app/youtube/get-last-by-playlist/PLLDxN82mMW3NrAoY-Nm6JYsk6ib5_5AZf');
+                $response = Http::get('https://xlaravel.vercel.app/youtube/get-last-by-playlist/PLLDxN82mMW3NrAoY-Nm6JYsk6ib5_5AZf');
                 if ($response->failed()) {
                     return null;
                 }
