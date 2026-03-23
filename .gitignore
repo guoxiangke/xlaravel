@@ -35,3 +35,5 @@ composer.lock
 READEME.md
 /TODO/
 /claude/
+storage/debugbar/
+.claude/worktrees/

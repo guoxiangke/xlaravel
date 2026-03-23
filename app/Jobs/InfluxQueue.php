@@ -1,23 +1,24 @@
 <?php
 
+// TODO check App\Jobs\InfluxQueue.php
+
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use InfluxDB2\Client;
-use InfluxDB2\WriteType as WriteType;
-use InfluxDB2\Model\WritePrecision as WritePrecision;
-use Illuminate\Support\Facades\Log;
+use InfluxDB2\Model\WritePrecision;
+use InfluxDB2\WriteType;
 
 class InfluxQueue implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $protocolLine;
+
     /**
      * Create a new job instance.
      */
@@ -45,7 +46,7 @@ class InfluxQueue implements ShouldQueue
         ]);
 
         // $writeApi = $client->createWriteApi();
-        $writeApi = $client->createWriteApi(["writeType" => WriteType::BATCHING, 'batchSize' => 1]);
+        $writeApi = $client->createWriteApi(['writeType' => WriteType::BATCHING, 'batchSize' => 1]);
         $writeApi->write($this->protocolLine);
         $client->close();
     }

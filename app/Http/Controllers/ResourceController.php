@@ -10,9 +10,7 @@ class ResourceController extends Controller
 {
     public function __construct(
         private Resources $resources
-        )
-    {
-    }
+    ) {}
 
     /**
      * Get all available resources
@@ -27,6 +25,11 @@ class ResourceController extends Controller
      */
     public function show(Request $request, string $keyword): JsonResponse
     {
+        // Reconstruct full keyword including query string (e.g. YouTube ?v=xxx)
+        if ($request->getQueryString()) {
+            $keyword .= '?'.$request->getQueryString();
+        }
+
         $resource = $this->resources->resolve($keyword);
 
         if ($resource === null) {
