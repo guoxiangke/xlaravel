@@ -1,14 +1,14 @@
 <?php
 
-use App\Resources\Resources;
 use App\Resources\ResourceResponse;
-use Illuminate\Support\Facades\Http;
+use App\Resources\Resources;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
 
 it('can resolve keywords from all handlers', function (string $keyword, string $expectedType) {
     // Set required config for tests
     Config::set('services.youtube.api_key', 'test-key');
-    
+
     // Mock external HTTP requests
     Http::fake([
         'bibleproject.com/*' => Http::response('<html><body><div class="intl-downloads-item-title">Test</div><a href="test.mp4"></a></body></html>'),
@@ -28,13 +28,13 @@ it('can resolve keywords from all handlers', function (string $keyword, string $
     // But Ren.php has a check: if (! config('services.youtube.api_key')) { return text; }
     // By setting the config above, it should proceed to call the Helper.
     // Let's mock the Helper or just allow it if we set the key.
-    
+
     // Actually, YouTubeHelper::getAllItemsByPlaylistId will call the Youtube facade.
     // We should mock the facade result.
     \Madcoda\Youtube\Facades\Youtube::shouldReceive('getPlaylistItemsByPlaylistIdAdvanced')
-        ->andReturn(['results' => [(object)['snippet' => (object)['title' => 'Title', 'resourceId' => (object)['videoId' => 'vid'], 'description' => 'Desc']]], 'info' => []]);
+        ->andReturn(['results' => [(object) ['snippet' => (object) ['title' => 'Title', 'resourceId' => (object) ['videoId' => 'vid'], 'description' => 'Desc']]], 'info' => []]);
 
-    $resources = new Resources();
+    $resources = new Resources;
     $result = $resources->resolve($keyword);
 
     if ($keyword === '7830') {
@@ -88,7 +88,7 @@ it('can resolve keywords from all handlers', function (string $keyword, string $
     ['674', 'music'],
     ['675', 'music'],
     ['678', 'music'],
-    ['680', 'music'],
+    ['695', 'music'],
     ['698', 'music'],
     ['639', 'music'],
     ['646', 'music'],
