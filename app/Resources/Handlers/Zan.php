@@ -34,7 +34,7 @@ class Zan
 
             if (! $data) {
                 try {
-                    $url = "https://www.zanmei.ai/search/song/{$name}";
+                    $url = config('services.zanmei.search_url')."/{$name}";
                     $response = Http::get($url);
                     if ($response->failed()) {
                         return null;
@@ -52,7 +52,7 @@ class Zan
                         $id = $matches[1][0];
                         $title = trim(strip_tags($matches[2][0]));
 
-                        $mp3 = "https://play.izanmei.net/song/p/{$id}.mp3";
+                        $mp3 = config('services.zanmei.play_url')."/{$id}.mp3";
                         $data = [
                             'url' => $mp3,
                             'title' => $title,

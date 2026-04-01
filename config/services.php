@@ -39,4 +39,9 @@ return [
         'api_key' => env('YOUTUBE_API_KEY'),
     ],
 
+    'zanmei' => [
+        'search_url' => env('ZANMEI_SEARCH_URL', 'https://www.zanmei.ai/search/song'),
+        'play_url' => env('ZANMEI_PLAY_URL', 'https://play.izanmei.net/song/p'),
+    ],
+
 ];
