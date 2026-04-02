@@ -12,7 +12,7 @@ class PastorLu
     public function getResourceList(): array
     {
         return [
-            ['keyword' => '801', 'title' => '卢牧师日讲'],
+            ['keyword' => '801', 'title' => '卢牧师每日圣经金句'],
             ['keyword' => '808', 'title' => '卢牧师带你读新约'],
         ];
     }
@@ -184,7 +184,7 @@ class PastorLu
                     'type' => 'link',
                     'data' => [
                         'title' => $title,
-                        'description' => '路牧师日讲 © 2026',
+                        'description' => '卢牧师每日圣经金句 © 2026',
                         'image' => $image,
                         'vid' => $vid,
                     ],
