@@ -15,6 +15,11 @@ class Youtubes
 
     public function resolve(string $keyword): ?ResourceResponse
     {
+        // 匹配 @channelName-videos 或 @channelName-streams
+        if (preg_match('/^@([\w.-]+)-(videos|streams)$/', $keyword, $matches)) {
+            return $this->resolveChannel($matches[1], $matches[2]);
+        }
+
         if (preg_match('/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|video\/|shorts\/|live\/))([\w-]{11,})/', $keyword, $matches)) {
             $vid = $matches[1];
 
@@ -64,5 +69,34 @@ class Youtubes
         }
 
         return null;
+    }
+
+    private function resolveChannel(string $channelName, string $listType): ?ResourceResponse
+    {
+        try {
+            $items = YouTubeHelper::scrapeChannel($channelName, $listType);
+
+            if (empty($items)) {
+                return null;
+            }
+
+            $item = YouTubeHelper::buildChannelResponse($items[0]['videoId'], $items[0]['title'], $channelName);
+
+            $videoData = ResourceResponse::link(
+                $item['addition']['data'],
+                $item['addition']['statistics']
+            );
+
+            $audioData = ResourceResponse::music(
+                $item['data'],
+                $item['statistics']
+            );
+
+            $audioData->addition = $videoData;
+
+            return $audioData;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

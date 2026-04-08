@@ -3,6 +3,7 @@
 namespace App\Resources\Helpers;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Madcoda\Youtube\Facades\Youtube;
 
 class YouTubeHelper
@@ -81,5 +82,73 @@ class YouTubeHelper
     public static function getVideoInfo(string $videoId): ?object
     {
         return Youtube::getVideoInfo($videoId);
+    }
+
+    /**
+     * Build audio+video response array for a channel video
+     */
+    public static function buildChannelResponse(string $vid, string $title, string $channelName): array
+    {
+        $image = "https://i.ytimg.com/vi/{$vid}/maxresdefault.jpg";
+        $mp4 = config('x-resources.r2_share_video')."/@{$channelName}/{$vid}.mp4";
+        $m4a = config('x-resources.r2_share_audio')."/@{$channelName}/{$vid}.m4a";
+
+        $addition = [
+            'type' => 'link',
+            'data' => [
+                'url' => $mp4,
+                'title' => $title,
+                'description' => "@{$channelName}",
+                'image' => $image,
+            ],
+            'statistics' => [
+                'metric' => 'youtube',
+                'keyword' => $vid,
+                'type' => 'video',
+            ],
+        ];
+
+        return [
+            'type' => 'music',
+            'data' => [
+                'url' => $m4a,
+                'title' => $title,
+                'description' => "@{$channelName}",
+                'image' => $image,
+            ],
+            'statistics' => [
+                'metric' => 'youtube',
+                'keyword' => $vid,
+                'type' => 'audio',
+            ],
+            'addition' => $addition,
+        ];
+    }
+
+    /**
+     * Scrape latest videos/streams from a YouTube channel page
+     *
+     * @return array<int, array{videoId: string, title: string}>
+     */
+    public static function scrapeChannel(string $channelName, string $listType = 'videos', int $limit = 0): array
+    {
+        $url = "https://www.youtube.com/@{$channelName}/{$listType}";
+        $response = Http::withHeaders([
+            'Accept-Language' => 'zh-CN,zh;q=0.9,en;q=0.8',
+        ])->get($url);
+
+        $re = '/vi\/([^\/]+).*?"text":"(.*?)"/';
+        preg_match_all($re, $response->body(), $matches);
+
+        $results = [];
+        $count = $limit > 0 ? min($limit, count($matches[1])) : count($matches[1]);
+        for ($i = 0; $i < $count; $i++) {
+            $results[] = [
+                'videoId' => $matches[1][$i],
+                'title' => $matches[2][$i],
+            ];
+        }
+
+        return $results;
     }
 }

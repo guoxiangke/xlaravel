@@ -26,8 +26,11 @@ Route::get('/resources/{keyword}', [App\Http\Controllers\ResourceController::cla
     ->name('resources.show');
 
 // YouTube 待下载视频列表（取出并清空）
-Route::get('/vids/download', function () {
-    $key = 'youtube-vids-need-download';
+// download to /tmp/vid.mp4 or /@channel/vid.mp4
+Route::get('/vids/download/{source?}', function (?string $source = null) {
+    $key = $source === 'byChannel'
+        ? 'youtube-vids-need-download-by-channel'
+        : 'youtube-vids-need-download';
 
     return Cache::pull($key, []);
 });
@@ -68,6 +71,16 @@ Route::get('/youtube/get-all-by-playlist/{playlistId}', function (string $playli
 
     return $all->pluck('contentDetails.videoId');
 });
+
+// 获取频道最新视频或直播列表（通过抓取YouTube频道页面）
+Route::get('/youtube/{listType}/{channelName}', function (string $listType, string $channelName) {
+    $limit = request()->integer('limit', 0);
+    $channelName = ltrim($channelName, '@');
+
+    $results = \App\Resources\Helpers\YouTubeHelper::scrapeChannel($channelName, $listType, $limit);
+
+    return count($results) === 1 ? $results[0] : $results;
+})->where('listType', 'videos|streams');
 
 Route::get('/s', function (Request $request) {
     $url = $request->query('url');
