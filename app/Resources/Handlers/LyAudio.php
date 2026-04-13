@@ -3,6 +3,8 @@
 namespace App\Resources\Handlers;
 
 use App\Resources\ResourceResponse;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Http;
 
 class LyAudio
@@ -120,7 +122,47 @@ class LyAudio
             return null;
         }
 
+        if ($numKeyword === 654) {
+            $replayResponse = $this->getItReplayResponse($numKeyword, $code);
+            if ($replayResponse !== null) {
+                return $replayResponse;
+            }
+        }
+
         return $this->getAudioProgram($numKeyword, $code);
+    }
+
+    /**
+     * 《与神同行》节目从 2026-04-13 起重播，由 2022-08-24 那集开始顺着重播（周一至周五）。
+     */
+    private function getItReplayResponse(int $keyword, string $code): ?ResourceResponse
+    {
+        $tz = 'Asia/Shanghai';
+        $replayStart = Carbon::parse('2026-04-13', $tz);
+        $seriesStart = Carbon::parse('2022-08-24', $tz);
+
+        $target = Carbon::now($tz)->startOfDay();
+        if ($target->isWeekend()) {
+            $target = $target->previous(CarbonInterface::FRIDAY);
+        }
+
+        if ($target->lt($replayStart)) {
+            return null;
+        }
+
+        $offset = (int) $replayStart->diffInWeekdays($target);
+        $episode = $seriesStart->copy()->addWeekdays($offset);
+
+        $alias = $code.$episode->format('ymd');
+        $url = "https://d3ml8yyp1h3hy5.cloudfront.net/ly/audio/{$episode->format('Y')}/{$code}/{$alias}.mp3";
+        $image = "https://txly2.net/images/program_banners/{$code}_prog_banner_sq.png";
+
+        return ResourceResponse::music([
+            'url' => $url,
+            'title' => "【{$keyword}】与神同行 ".$target->format('ymd'),
+            'description' => '重播 '.$episode->format('Y-m-d'),
+            'image' => $image,
+        ]);
     }
 
     private function findProgram(int $keyword): ?array

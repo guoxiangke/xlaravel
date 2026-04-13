@@ -37,3 +37,4 @@ READEME.md
 /claude/
 storage/debugbar/
 .claude/worktrees/
+.claude/backup/

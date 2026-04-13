@@ -155,3 +155,47 @@ it('can resolve keywords from all handlers', function (string $keyword, string $
     ['799', 'music'],
     ['赞美恩典', 'music'],
 ]);
+
+describe('LyAudio 654 与神同行 replay', function () {
+    it('returns the latest episode from API before the replay start date', function () {
+        Http::fake([
+            'x.lydt.work/*' => Http::response(['data' => [[
+                'link' => 'https://x.lydt.work/storage/ly/audio/2026/it/it260410.mp3',
+                'alias' => 'it260410',
+                'program' => ['name' => '与神同行'],
+                'description' => 'latest desc',
+            ]]]),
+        ]);
+
+        $this->travelTo(\Carbon\Carbon::parse('2026-04-12'));
+
+        $handler = new \App\Resources\Handlers\LyAudio;
+        $result = $handler->resolve('654');
+
+        expect($result)->toBeInstanceOf(ResourceResponse::class);
+        expect($result->type)->toBe('music');
+        expect($result->data['url'])->toContain('it260410.mp3');
+    });
+
+    it('maps replay dates to the original 2022-08-24 series', function (string $today, string $expectedAlias, string $expectedYear) {
+        $this->travelTo(\Carbon\Carbon::parse($today));
+
+        $handler = new \App\Resources\Handlers\LyAudio;
+        $result = $handler->resolve('654');
+
+        expect($result)->toBeInstanceOf(ResourceResponse::class);
+        expect($result->type)->toBe('music');
+        expect($result->data['url'])->toBe(
+            "https://d3ml8yyp1h3hy5.cloudfront.net/ly/audio/{$expectedYear}/it/{$expectedAlias}.mp3"
+        );
+    })->with([
+        ['2026-04-13', 'it220824', '2022'], // Mon → Wed 2022-08-24
+        ['2026-04-14', 'it220825', '2022'], // Tue → Thu 2022-08-25
+        ['2026-04-15', 'it220826', '2022'], // Wed → Fri 2022-08-26
+        ['2026-04-16', 'it220829', '2022'], // Thu → Mon 2022-08-29
+        ['2026-04-17', 'it220830', '2022'], // Fri → Tue 2022-08-30
+        ['2026-04-18', 'it220830', '2022'], // Sat → 回退到周五 → Tue 2022-08-30
+        ['2026-04-19', 'it220830', '2022'], // Sun → 回退到周五 → Tue 2022-08-30
+        ['2026-04-20', 'it220831', '2022'], // Mon → Wed 2022-08-31
+    ]);
+});
