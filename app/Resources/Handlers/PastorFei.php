@@ -32,10 +32,6 @@ class PastorFei
 
         $now = now()->setTimezone('Asia/Shanghai');
 
-        if ($now->isSunday()) {
-            return null;
-        }
-
         $date = $now->format('ymd');
         $url = config('x-resources.r2_share_audio').'/boteli/'.$date.'.MP3';
 

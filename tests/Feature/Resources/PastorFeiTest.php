@@ -185,30 +185,42 @@ it('caches xlsx until end of Shanghai day', function () {
     expect(abs($expiresAt - $endOfDay))->toBeLessThanOrEqual(1);
 });
 
-it('returns 404 on Sunday (Asia/Shanghai)', function () {
+it('also serves on Sunday (Asia/Shanghai)', function () {
     // 2026-04-19 is a Sunday
     Carbon::setTestNow(Carbon::parse('2026-04-19 10:00:00', 'Asia/Shanghai'));
 
     Http::fake([
         '*boteli/xf2.xlsx*' => Http::response(makePastorFeiXlsx([
-            ['260419', '本不该播出'],
+            ['260419', '主日灵修'],
         ])),
     ]);
 
-    $this->getJson('/resources/805')->assertNotFound();
+    $expected = config('x-resources.r2_share_audio').'/boteli/260419.MP3';
+
+    $this->getJson('/resources/805')
+        ->assertOk()
+        ->assertJsonPath('data.url', $expected)
+        ->assertJsonPath('data.title', '主日灵修')
+        ->assertJsonPath('data.description', '260419');
 });
 
-it('treats Saturday UTC evening as Sunday Shanghai and returns 404', function () {
+it('treats Saturday UTC evening as Sunday Shanghai and still serves', function () {
     // 2026-04-18 17:00 UTC === 2026-04-19 01:00 Shanghai (Sunday)
     Carbon::setTestNow(Carbon::parse('2026-04-18 17:00:00', 'UTC'));
 
     Http::fake([
         '*boteli/xf2.xlsx*' => Http::response(makePastorFeiXlsx([
-            ['260419', '本不该播出'],
+            ['260419', '主日灵修'],
         ])),
     ]);
 
-    $this->getJson('/resources/805')->assertNotFound();
+    $expected = config('x-resources.r2_share_audio').'/boteli/260419.MP3';
+
+    $this->getJson('/resources/805')
+        ->assertOk()
+        ->assertJsonPath('data.url', $expected)
+        ->assertJsonPath('data.title', '主日灵修')
+        ->assertJsonPath('data.description', '260419');
 });
 
 it('returns 404 for non-matching keywords on PastorFei', function () {
