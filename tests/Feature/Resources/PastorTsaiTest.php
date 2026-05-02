@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Http;
 it('resolves keyword 802 to latest PastorTsai video', function () {
     Http::fake([
         'youtube.com/@PastorTsai/videos' => Http::response(
-            'html vi/abc123xyz00/more "text":"2026.04.07∣活潑的生命∣詩篇90:1-17"'
+            'html vi/abc123xyz00/more,"thumbnailOverlayTimeStatusRenderer":{"text":{"runs":[{"text":"17:00"}]}},"title":{"runs":[{"text":"2026.04.07∣活潑的生命∣詩篇90:1-17"}]}'
         ),
     ]);
 

@@ -137,7 +137,7 @@ class YouTubeHelper
             'Accept-Language' => 'zh-CN,zh;q=0.9,en;q=0.8',
         ])->get($url);
 
-        $re = '/vi\/([^\/]+).*?"text":"(.*?)"/';
+        $re = '/vi\/([^\/]+).*?"title":\{(?:"runs":\[\{)?"(?:text|simpleText)":"(.*?)"/';
         preg_match_all($re, $response->body(), $matches);
 
         $results = [];

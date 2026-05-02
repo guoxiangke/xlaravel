@@ -9,16 +9,26 @@ beforeEach(function () {
 });
 
 /**
- * Build a fake YouTube channel HTML body matching the regex used by
- * YouTubeHelper::scrapeChannel(): /vi\/([^\/]+).*?"text":"(.*?)"/.
+ * Build a fake YouTube channel HTML body that mimics the relevant slices of
+ * YouTube's real videoRenderer JSON: a thumbnail URL containing vi/<id>/, an
+ * optional duration overlay (whose "text" must NOT be picked up as the title),
+ * and the actual "title":{"runs":[{"text":...}]} structure.
  *
- * @param  array<int, array{0: string, 1: string}>  $items  list of [videoId, title]
+ * @param  array<int, array{0: string, 1: string, 2?: string}>  $items  list of [videoId, title, ?durationLabel]
  */
 function makePastorLuChannelHtml(array $items): string
 {
     $body = '';
-    foreach ($items as [$videoId, $title]) {
-        $body .= "vi/{$videoId}/hqdefault.jpg ... \"text\":\"{$title}\" ";
+    foreach ($items as $item) {
+        $videoId = $item[0];
+        $title = $item[1];
+        $duration = $item[2] ?? null;
+
+        $body .= "vi/{$videoId}/hqdefault.jpg";
+        if ($duration !== null) {
+            $body .= ',"thumbnailOverlayTimeStatusRenderer":{"text":{"runs":[{"text":"'.$duration.'"}]}}';
+        }
+        $body .= ',"title":{"runs":[{"text":"'.$title.'"}]} ';
     }
 
     return $body;
@@ -97,6 +107,23 @@ it('caches keyword 801 result so a second call avoids YouTube', function () {
         'youtube.com/@pastorpaulqiankunlu618/videos' => Http::response(
             makePastorLuChannelHtml([
                 ['changedXYZ', 'changed-title'],
+            ])
+        ),
+    ]);
+
+    $this->getJson('/resources/801')
+        ->assertOk()
+        ->assertJsonPath('data.vid', '_R0rYaNDdts')
+        ->assertJsonPath('data.title', '每日圣经金句-260503-罗1:4');
+});
+
+it('ignores duration overlay text and uses the real title', function () {
+    Carbon::setTestNow(Carbon::parse('2026-05-03 10:00:00', 'Asia/Shanghai'));
+
+    Http::fake([
+        'youtube.com/@pastorpaulqiankunlu618/videos' => Http::response(
+            makePastorLuChannelHtml([
+                ['_R0rYaNDdts', '每日圣经金句-260503-罗1:4', '17:00'],
             ])
         ),
     ]);
