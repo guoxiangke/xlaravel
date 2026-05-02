@@ -2,17 +2,20 @@
 
 use App\Resources\Handlers\Lts;
 use App\Resources\ResourceResponse;
+use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 /**
- * Fake API response:
- *   专题特辑 → pos 1 = 毕业周特辑2015 (6 ep), pos 2 = 圣诞节特辑2019 (6 ep)
- *   启航课程 → pos 1 = 新约综览 (30 ep)
- *   普及本科 → pos 1 = 诗歌智慧书II (30 ep), pos 2 = 婚姻与家庭 (24 ep)
- *   普及进深 → pos 1 = 基督论 (24 ep)
- *   noTagName → falls into 专题特辑 (pos 3)
- *   count=0   → filtered
+ * Fake API response (categorized by Lts::categorizeCourse()):
+ *   专题特辑 → pos 1 = 毕业周特辑2015 (6 ep), pos 2 = 圣诞节特辑2019 (6 ep)   [name 匹配 "特辑"]
+ *   启航课程 → pos 1 = 婚姻与家庭 (24 ep)                                    [name 匹配 "婚姻与家庭"]
+ *   普及本科 → pos 1 = 无分类课程 (6 ep), pos 2 = 新约综览 (30 ep),
+ *              pos 3 = 诗歌智慧书II (30 ep)                                  [默认分类]
+ *   普及进深 → pos 1 = 基督论 (24 ep)                                        [name 匹配 "基督论"]
+ *   count=0  → 过滤掉
+ *
+ * URL 规则：lts/{cleanCode}/{code}{ep}.mp3，cleanCode = code 去末尾数字
  */
 $fakeCourses = [
     ['id' => '1',   'name' => '毕业周特辑2015', 'code' => 'magrc150', 'count' => 6,  'category' => '专题特辑', 'description' => ''],
@@ -40,15 +43,15 @@ beforeEach(function () use ($fakeCourses) {
 it('returns null for non-matching keywords', function () {
     $h = new Lts;
 
-    expect($h->resolve('abc'))->toBeNull()   // 非数字
-        ->and($h->resolve('100'))->toBeNull() // 首位 1 不在 2–5
-        ->and($h->resolve('600'))->toBeNull() // 首位 6 不在 2–5
-        ->and($h->resolve('2001'))->toBeNull() // 4 位不支持
-        ->and($h->resolve('200001'))->toBeNull(); // 6 位不支持
+    expect($h->resolve('abc'))->toBeNull()
+        ->and($h->resolve('100'))->toBeNull()
+        ->and($h->resolve('600'))->toBeNull()
+        ->and($h->resolve('2001'))->toBeNull()
+        ->and($h->resolve('200001'))->toBeNull();
 });
 
 it('returns null for unknown position within valid category', function () {
-    // 专题特辑 只有 3 门课 (pos 1–3)；pos=99 不存在
+    // 专题特辑 只有 2 门课 (pos 1–2)；pos=99 不存在
     expect((new Lts)->resolve('299'))->toBeNull();
 });
 
@@ -62,8 +65,7 @@ it('returns 专题特辑 menu for 200', function () {
         ->and($result->data['content'])->toContain('【专题特辑】')
         ->and($result->data['content'])->toContain('【201】毕业周特辑2015')
         ->and($result->data['content'])->toContain('【202】圣诞节特辑2019')
-        ->and($result->data['content'])->toContain('【203】无分类课程') // noTagName → 专题特辑 pos 3
-        ->and($result->data['content'])->not->toContain('CBI_skip');  // count=0 已过滤
+        ->and($result->data['content'])->not->toContain('CBI_skip');
 });
 
 it('returns 启航课程 menu for 300', function () {
@@ -71,15 +73,16 @@ it('returns 启航课程 menu for 300', function () {
 
     expect($result->type)->toBe('text')
         ->and($result->data['content'])->toContain('【启航课程】')
-        ->and($result->data['content'])->toContain('【301】新约综览');
+        ->and($result->data['content'])->toContain('【301】婚姻与家庭');
 });
 
 it('returns 普及本科 menu for 400', function () {
     $result = (new Lts)->resolve('400');
 
     expect($result->data['content'])
-        ->toContain('【401】诗歌智慧书II')
-        ->and($result->data['content'])->toContain('【402】婚姻与家庭');
+        ->toContain('【401】无分类课程')
+        ->and($result->data['content'])->toContain('【402】新约综览')
+        ->and($result->data['content'])->toContain('【403】诗歌智慧书II');
 });
 
 it('returns 普及进深 menu for 500', function () {
@@ -95,8 +98,8 @@ it('returns auto episode for course keyword 201', function () {
 
     expect($result)->toBeInstanceOf(ResourceResponse::class)
         ->and($result->type)->toBe('music')
-        ->and($result->data['url'])->toMatchRegex(
-            '#^https://d3ml8yyp1h3hy5\.cloudfront\.net/lts/magrc150/magrc150\d{2}\.mp3$#'
+        ->and($result->data['url'])->toMatch(
+            '#^https://d3ml8yyp1h3hy5\.cloudfront\.net/lts/magrc/magrc150\d{2}\.mp3$#'
         );
 });
 
@@ -109,9 +112,10 @@ it('auto episode is within valid range', function () {
 });
 
 it('returns auto episode for two-digit position keyword 401', function () {
+    // 普及本科 pos 1 = 无分类课程 (code=mavxxx0)
     $result = (new Lts)->resolve('401');
 
-    expect($result->data['url'])->toContain('mavpk0/mavpk0');
+    expect($result->data['url'])->toContain('mavxxx/mavxxx0');
 });
 
 // ── 指定集数 x{pos:02}{ep:02} ────────────────────────────────────────────────
@@ -122,15 +126,16 @@ it('returns episode 1 of 专题特辑 course 1 for 20101', function () {
     expect($result)->toBeInstanceOf(ResourceResponse::class)
         ->and($result->type)->toBe('music')
         ->and($result->data['url'])->toBe(
-            'https://d3ml8yyp1h3hy5.cloudfront.net/lts/magrc150/magrc15001.mp3'
+            'https://d3ml8yyp1h3hy5.cloudfront.net/lts/magrc/magrc15001.mp3'
         );
 });
 
-it('returns episode 25 for 40125 (普及本科 course 1, ep 25)', function () {
-    $result = (new Lts)->resolve('40125');
+it('returns episode 25 for 40325 (普及本科 course 3, ep 25)', function () {
+    // 普及本科 pos 3 = 诗歌智慧书II (code=mavpk0, count=30)
+    $result = (new Lts)->resolve('40325');
 
     expect($result->data['url'])->toBe(
-        'https://d3ml8yyp1h3hy5.cloudfront.net/lts/mavpk0/mavpk025.mp3'
+        'https://d3ml8yyp1h3hy5.cloudfront.net/lts/mavpk/mavpk025.mp3'
     );
 });
 
@@ -169,14 +174,14 @@ it('uses ltstpb1 cover for 普及进深', function () {
 // ── description 回落逻辑 ────────────────────────────────────────────────────
 
 it('uses api description when available', function () {
-    // course 2 of 专题特辑 (圣诞节特辑2019) has description='节目简介'
+    // 专题特辑 pos 2 = 圣诞节特辑2019，description='节目简介'
     $result = (new Lts)->resolve('202');
 
     expect($result->data['description'])->toBe('节目简介');
 });
 
 it('falls back to default description when api description is empty', function () {
-    // course 1 of 专题特辑 has empty description
+    // 专题特辑 pos 1 = 毕业周特辑2015，description=''
     $result = (new Lts)->resolve('201');
 
     expect($result->data['description'])->toContain('良友圣经学院');
@@ -184,10 +189,11 @@ it('falls back to default description when api description is empty', function (
 
 // ── noTagName 归类 ──────────────────────────────────────────────────────────
 
-it('places noTagName course into 专题特辑 as pos 3', function () {
-    $menu = (new Lts)->resolve('200');
+it('places noTagName course into 普及本科 as pos 1', function () {
+    // 无分类课程 不匹配任何分类规则，落入默认的「普及本科」
+    $menu = (new Lts)->resolve('400');
 
-    expect($menu->data['content'])->toContain('【203】无分类课程');
+    expect($menu->data['content'])->toContain('【401】无分类课程');
 });
 
 // ── 缓存行为 ────────────────────────────────────────────────────────────────
@@ -203,6 +209,10 @@ it('caches catalog after first api call', function () {
 
 it('does not cache on api failure', function () {
     Cache::flush();
+
+    // Laravel 的 Http::fake 会累加 stub，且第一个匹配胜出。
+    // 这里用 swap 替换为全新的 Factory，再注册 500 响应，确保 beforeEach 的成功 stub 不再生效。
+    Http::swap(new HttpFactory);
     Http::fake(['y.lydt.work/*' => Http::response([], 500)]);
 
     expect((new Lts)->resolve('201'))->toBeNull()
