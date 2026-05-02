@@ -137,7 +137,13 @@ class YouTubeHelper
             'Accept-Language' => 'zh-CN,zh;q=0.9,en;q=0.8',
         ])->get($url);
 
-        $re = '/vi\/([^\/]+).*?"title":\{(?:"runs":\[\{)?"(?:text|simpleText)":"(.*?)"/';
+        // YouTube channel pages currently ship two co-existing card formats:
+        //   - gridVideoRenderer  → "title":{"runs":[{"text":"<title>"}]}
+        //   - lockupViewModel    → "title":{"content":"<title>"}
+        // The subscribe-prompt panel uses "title":{"simpleText":"..."} and the
+        // duration overlay uses "thumbnailOverlayTimeStatusRenderer":{"text":...},
+        // both of which we intentionally do not match.
+        $re = '/vi\/([^\/]+).*?"title":\{(?:"content":|"runs":\[\{"text":)"(.*?)"/';
         preg_match_all($re, $response->body(), $matches);
 
         $results = [];

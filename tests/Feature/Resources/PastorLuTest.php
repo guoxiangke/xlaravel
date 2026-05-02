@@ -133,3 +133,24 @@ it('ignores duration overlay text and uses the real title', function () {
         ->assertJsonPath('data.vid', '_R0rYaNDdts')
         ->assertJsonPath('data.title', '每日圣经金句-260503-罗1:4');
 });
+
+it('ignores subscribe-panel simpleText title and uses the real video title', function () {
+    Carbon::setTestNow(Carbon::parse('2026-05-03 10:00:00', 'Asia/Shanghai'));
+
+    // Real YouTube channel pages embed a subscribe prompt structured as
+    //   "title":{"simpleText":"想要订阅此频道？"}
+    // which sits between vi/<id>/ and the actual videoRenderer title. The
+    // scrape regex must skip it and pick the runs-based title.
+    $body = 'vi/_R0rYaNDdts/hqdefault.jpg'
+        .',"engagementPanelTitleHeaderRenderer":{"title":{"simpleText":"想要订阅此频道？"}}'
+        .',"title":{"runs":[{"text":"每日圣经金句-260503-罗1:4"}]} ';
+
+    Http::fake([
+        'youtube.com/@pastorpaulqiankunlu618/videos' => Http::response($body),
+    ]);
+
+    $this->getJson('/resources/801')
+        ->assertOk()
+        ->assertJsonPath('data.vid', '_R0rYaNDdts')
+        ->assertJsonPath('data.title', '每日圣经金句-260503-罗1:4');
+});
