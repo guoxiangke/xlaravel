@@ -2,6 +2,7 @@
 
 namespace App\Resources\Handlers;
 
+use App\Resources\Helpers\YouTubeHelper;
 use App\Resources\ResourceResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -9,6 +10,8 @@ use Illuminate\Support\Str;
 
 class PastorLu
 {
+    private const CHANNEL_NAME = 'pastorpaulqiankunlu618';
+
     public function getResourceList(): array
     {
         return [
@@ -84,7 +87,6 @@ class PastorLu
         }
     }
 
-
     private function getNewTestamentReading(string $offset): ?ResourceResponse
     {
         try {
@@ -150,29 +152,27 @@ class PastorLu
 
         if (! $data) {
             try {
-                $response = Http::withHeaders([
-                    'Accept-Language' => 'zh-CN,zh;q=0.9,en;q=0.8',
-                ])->get('https://www.youtube.com/@pastorpaulqiankunlu618/videos');
+                $results = YouTubeHelper::scrapeChannel(self::CHANNEL_NAME, 'videos');
 
-                $html = $response->body();
-                $re = '#vi/([^/]+).*?"text":"(.*?)"#';
-                preg_match_all($re, $html, $matches);
+                if (empty($results)) {
+                    return null;
+                }
 
                 $day = now()->setTimezone('Asia/Shanghai')->format('md');
 
-                // Find yesterday's video
-                foreach ($matches[2] as $key => $value) {
-                    if (Str::contains($value, $day)) {
-                        $vid = $matches[1][$key];
-                        $title = $value;
+                $vid = null;
+                $title = null;
+                foreach ($results as $item) {
+                    if (Str::contains($item['title'], $day)) {
+                        $vid = $item['videoId'];
+                        $title = $item['title'];
                         break;
                     }
                 }
 
-                if (! isset($vid)) {
-                    // Fallback to first video
-                    $vid = $matches[1][0] ?? null;
-                    $title = $matches[2][0] ?? 'Daily Message';
+                if (! $vid) {
+                    $vid = $results[0]['videoId'] ?? null;
+                    $title = $results[0]['title'] ?? 'Daily Message';
                 }
 
                 if (! $vid) {
@@ -199,5 +199,4 @@ class PastorLu
 
         return $data;
     }
-
 }
