@@ -112,25 +112,14 @@ class Fwd
             $tomorrow = now('Asia/Shanghai')->addDay()->startOfDay();
             $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
 
-            $html = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
-                return Http::get('https://www.youtube.com/@fwdforwardchurch7991/streams')->body();
-            });
-
-            $re = '/"text":"FWDFC ([^"]+).*?"videoId":"([^"]+)"/';
-            preg_match_all($re, $html, $matches);
-
-            foreach ($matches[1] as $key => $value) {
-                if (Str::containsAll($value, ['主日崇拜', '日出神話'])) {
-                    $title = $value;
-                    $vid = $matches[2][$key];
-                    break;
-                }
-            }
-
+            $playListId="PLLDxN82mMW3PwG9whuWV6GOnOd2U-9dh5";
+            $first = \App\Resources\Helpers\YouTubeHelper::getAllItemsByPlaylistId($playListId)->first();
+            $vid = $first->contentDetails->videoId;
+            $title = $first->snippet->title;
+            
             if (! isset($vid)) {
                 return null;
             }
-
             $channelDomain = config('x-resources.r2_share_audio').'/@fwdforwardchurch7991/';
             $url = $channelDomain.$vid.'.mp4';
             $image = config('x-resources.r2_share_audio').'/uPic/2023/IeDDmx.jpg';
@@ -140,7 +129,7 @@ class Fwd
             $videoResponse = ResourceResponse::link([
                 'url' => $url,
                 'title' => '【日出神話】主日崇拜線上直播',
-                'description' => $descs[0],
+                'description' => "",
                 'image' => $image,
                 'vid' => $vid,
             ], [
@@ -175,24 +164,10 @@ class Fwd
     private function getPrayerMeeting(): ?ResourceResponse
     {
         try {
-            $cacheKey = 'fwd_prayer_meeting_streams';
-            $tomorrow = now('Asia/Shanghai')->addDay()->startOfDay();
-            $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
-
-            $html = Cache::remember($cacheKey, $secondsUntilTomorrow, function () {
-                return Http::get('https://www.youtube.com/@fwdforwardchurch7991/streams')->body();
-            });
-
-            $re = '/"text":"FWDFC ([^"]+).*?"videoId":"([^"]+)"/';
-            preg_match_all($re, $html, $matches);
-
-            foreach ($matches[1] as $key => $value) {
-                if (Str::contains($value, '禱告會')) {
-                    $title = $value;
-                    $vid = $matches[2][$key];
-                    break;
-                }
-            }
+           $playListId="PLLDxN82mMW3O6kSd-0ddG20ipoEi8RThY";
+            $first = \App\Resources\Helpers\YouTubeHelper::getAllItemsByPlaylistId($playListId)->last();
+            $vid = $first->contentDetails->videoId;
+            $title = $first->snippet->title;
 
             if (! isset($vid)) {
                 return null;
