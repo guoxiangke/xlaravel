@@ -215,7 +215,7 @@ class LyAudio
 
             // 特殊处理某些节目的URL
             if (in_array($keyword, [641, 642, 643, 644, 645])) {
-                $url = str_replace('/ly/audio/', '/lts/', $url);
+                // $url = str_replace('/ly/audio/', '/lts/', $url);
             }
 
             $image = "https://txly2.net/images/program_banners/{$code}_prog_banner_sq.png";
