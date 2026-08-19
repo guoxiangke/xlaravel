@@ -17,7 +17,7 @@ class Ren
         '819' => ['shorts' => false, 'title' => '節日特別節目', 'id' => 'PL942JJGZpDIeHgKvbi21itY15k3MTyeWL'],
         '820' => ['shorts' => false, 'title' => '聖經故事', 'id' => 'PL942JJGZpDIfNcwnO1aKqdU8VoXQqBZoN'],
         '821' => ['shorts' => false, 'title' => '我們看世界談話節目', 'id' => 'PL942JJGZpDIddB74WZ7X3CZQUJSpUealR', 'order' => 'asc'],
-        '822' => ['shorts' => false, 'title' => '傳奇基督徒的二三事', 'id' => 'PL942JJGZpDIdm1vCiIjrj6pF5ZcwVVcw-'],
+        // '822' => ['shorts' => false, 'title' => '傳奇基督徒的二三事', 'id' => 'PL942JJGZpDIdm1vCiIjrj6pF5ZcwVVcw-'],
         '823' => ['shorts' => false, 'title' => '活力見證', 'id' => 'PL942JJGZpDIcGHU4XTiO3cLoUibfC05gf'],
         '824' => ['shorts' => false, 'title' => '孫老師夜話', 'id' => 'PLKpVlslvGNdjxJOrbOBwibe-MH7XeZfG2'],
     ];
