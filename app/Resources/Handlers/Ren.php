@@ -120,7 +120,11 @@ class Ren
             'description' => $description,
             'image' => $image,
             'vid' => $vid,
-        ], [], $addition);
+        ], [
+            'metric' => class_basename(__CLASS__),
+            'keyword' => $keyword,
+            'type' => 'video',
+        ], $addition);
 
         if (! ($config['shorts'] ?? false)) {
             // Add audio version for non-shorts
@@ -130,6 +134,10 @@ class Ren
                 'description' => $description,
                 'image' => $image,
                 'vid' => $vid,
+            ], [
+                'metric' => class_basename(__CLASS__),
+                'keyword' => $keyword,
+                'type' => 'audio',
             ]);
 
             $videoResponse->addition = $audioResponse;
@@ -182,6 +190,10 @@ class Ren
             'description' => $description,
             'image' => $image,
             'vid' => $vid,
+        ], [
+            'metric' => class_basename(__CLASS__),
+            'keyword' => $keyword,
+            'type' => 'video',
         ]);
 
         // Add audio version
@@ -191,6 +203,10 @@ class Ren
             'description' => $description,
             'image' => $image,
             'vid' => $vid,
+        ], [
+            'metric' => class_basename(__CLASS__),
+            'keyword' => $keyword,
+            'type' => 'audio',
         ]);
 
         if ($keyword == '832') {

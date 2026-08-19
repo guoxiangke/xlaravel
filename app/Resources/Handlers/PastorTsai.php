@@ -37,12 +37,12 @@ class PastorTsai
 
             $videoData = ResourceResponse::link(
                 $response['addition']['data'],
-                $response['addition']['statistics']
+                ['metric' => class_basename(__CLASS__)] + $response['addition']['statistics']
             );
 
             $audioData = ResourceResponse::music(
                 $response['data'],
-                $response['statistics']
+                ['metric' => class_basename(__CLASS__)] + $response['statistics']
             );
 
             $audioData->addition = $videoData;

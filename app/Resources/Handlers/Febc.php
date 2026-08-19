@@ -89,6 +89,10 @@ class Febc
                 'title' => $title,
                 'description' => $jdata['title'] ?? $program['title'],
                 'image' => $jdata['image'] ?? '',
+            ], [
+                'metric' => class_basename(__CLASS__),
+                'keyword' => $keyword,
+                'type' => 'audio',
             ]);
 
         } catch (\Exception $e) {

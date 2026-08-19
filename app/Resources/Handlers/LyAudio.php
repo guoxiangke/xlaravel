@@ -162,6 +162,10 @@ class LyAudio
             'title' => "【{$keyword}】与神同行 ".$target->format('ymd'),
             'description' => '重播 '.$episode->format('Y-m-d'),
             'image' => $image,
+        ], [
+            'metric' => class_basename(__CLASS__),
+            'keyword' => $keyword,
+            'type' => 'audio',
         ]);
     }
 
@@ -226,6 +230,10 @@ class LyAudio
                 'title' => "【{$keyword}】".str_replace('圣经', 'SJ', $item['program']['name']).' '.$dateStr,
                 'description' => str_replace('教会', 'JH', $item['description']),
                 'image' => $image,
+            ], [
+                'metric' => class_basename(__CLASS__),
+                'keyword' => $keyword,
+                'type' => 'audio',
             ]);
         } catch (\Exception $e) {
             return null;

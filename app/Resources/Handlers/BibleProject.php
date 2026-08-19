@@ -82,6 +82,10 @@ final class BibleProject
                 'url' => $url,
                 'title' => $title,
                 'description' => '来自 Bible Project',
+            ], [
+                'metric' => class_basename(__CLASS__),
+                'keyword' => $keyword,
+                'type' => 'audio',
             ]);
 
             return ResourceResponse::link([
@@ -89,7 +93,11 @@ final class BibleProject
                 'title' => $title,
                 'description' => '来自 Bible Project',
                 'image' => $pnglinks[$offset] ?? '',
-            ], [], $addition);
+            ], [
+                'metric' => class_basename(__CLASS__),
+                'keyword' => $keyword,
+                'type' => 'video',
+            ], $addition);
         }
 
         return null;

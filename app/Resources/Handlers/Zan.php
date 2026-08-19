@@ -68,7 +68,11 @@ class Zan
                 }
             }
 
-            return ResourceResponse::music($data);
+            return ResourceResponse::music($data, [
+                'metric' => class_basename(__CLASS__),
+                'keyword' => $name,
+                'type' => 'audio',
+            ]);
         }
 
         return null;

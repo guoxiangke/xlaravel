@@ -14,7 +14,7 @@ class Tingdao
         $list = [];
         $albums = $this->getAlbums();
         foreach ($albums as $index => $album) {
-            $keyword = 't' . str_pad($index + 1, 3, '0', STR_PAD_LEFT);
+            $keyword = 't'.str_pad($index + 1, 3, '0', STR_PAD_LEFT);
             $list[] = [
                 'keyword' => $keyword,
                 'title' => $album['title'],
@@ -82,7 +82,11 @@ class Tingdao
                 }
             }
 
-            return ResourceResponse::music($data);
+            return ResourceResponse::music($data, [
+                'metric' => class_basename(__CLASS__),
+                'keyword' => $keyword,
+                'type' => 'audio',
+            ]);
         }
 
         return null;
