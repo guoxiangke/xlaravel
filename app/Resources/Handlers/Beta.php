@@ -15,7 +15,7 @@ class Beta
         return [
             // Original MBC functionality
             ['keyword' => '791', 'title' => '慕安德烈每日靈修签到'],
-            
+
             // Migrated from Tpehoc Handler - complete list from original
             ['keyword' => '799', 'title' => '恩典365'],
             ['keyword' => '798', 'title' => '罗门,门徒训练'],
@@ -49,9 +49,9 @@ class Beta
 
         // 793 為兒女禱告40天 - COMPLETE VERSION from original
         if ($keyword == '793') {
-            $title = "為兒女禱告40天";
-            $desc = "救恩之聲 靈修禱告";
-            $prefix = "https://www.vos.org.tw/Datafile/UploadFile/Voice/70/";
+            $title = '為兒女禱告40天';
+            $desc = '救恩之聲 靈修禱告';
+            $prefix = 'https://www.vos.org.tw/Datafile/UploadFile/Voice/70/';
             $image = 'https://wsrv.nl/?url=https://i0.wp.com/cchappyfamily.plus/wp-content/uploads/2018/05/pray20180515.jpg';
             $items = [
                 '20190122153048.mp3', '20190122153311.mp3', '20190122153321.mp3', '20190122153330.mp3',
@@ -63,14 +63,14 @@ class Beta
                 '20190122154123.mp3', '20190122154140.mp3', '20190122154151.mp3', '20190122154221.mp3',
                 '20190122154250.mp3', '20190122154308.mp3', '20190122154334.mp3', '20190122154355.mp3',
                 '20190122154427.mp3', '20190122154513.mp3', '20190122154528.mp3', '20190122154607.mp3',
-                '20190122154626.mp3', '20190122154650.mp3', '20190122154706.mp3', '20190122154728.mp3'
+                '20190122154626.mp3', '20190122154650.mp3', '20190122154706.mp3', '20190122154728.mp3',
             ];
             $index = now()->format('z') % 40;
-            $audioUrl = config('x-resources.r2_share_audio')."/793/" . $items[$index];
-            
+            $audioUrl = config('x-resources.r2_share_audio').'/793/'.$items[$index];
+
             return ResourceResponse::music([
                 'url' => $audioUrl,
-                'title' => '('.($index + 1)."/40)".$title,
+                'title' => '('.($index + 1).'/40)'.$title,
                 'description' => $desc,
                 'image' => $image,
             ], ['metric' => 'Tpehoc', 'keyword' => $keyword]);
@@ -78,10 +78,10 @@ class Beta
 
         // 794 信心是一把梯子 - COMPLETE VERSION from original (72 items!)
         if ($keyword == '794') {
-            $title = "信心是一把梯子";
-            $desc = "救恩之聲 有聲書";
-            $prefix = "https://www.vos.org.tw/Datafile/UploadFile/Voice/52/";
-            $items = [    
+            $title = '信心是一把梯子';
+            $desc = '救恩之聲 有聲書';
+            $prefix = 'https://www.vos.org.tw/Datafile/UploadFile/Voice/52/';
+            $items = [
                 ['title' => '幸好上帝沒答應', 'file' => '20211018145604.mp3'],
                 ['title' => '量恩而為', 'file' => '20211018145727.mp3'],
                 ['title' => '哦上帝不是故意的', 'file' => '20211018150104.mp3'],
@@ -159,11 +159,11 @@ class Beta
             $image = 'https://www.vos.org.tw/Datafile/Icon/20180320152534135.png';
             $total = count($items);
             $index = now()->format('z') % $total;
-            
+
             return ResourceResponse::music([
-                'url' => $prefix . $items[$index]['file'],
+                'url' => $prefix.$items[$index]['file'],
                 'title' => '('.($index + 1)."/{$total})".$title,
-                'description' => $items[$index]['title'] . " " . $desc,
+                'description' => $items[$index]['title'].' '.$desc,
                 'image' => $image,
             ], ['metric' => 'Tpehoc', 'keyword' => $keyword]);
         }
@@ -171,32 +171,32 @@ class Beta
         // 795 有声书系列 - COMPLETE VERSION from original (26 playlists!)
         if (Str::startsWith($keyword, '795') && strlen($keyword) >= 3) {
             $playLists = [
-                ["id" => "PL_sOpTJkyWnAbZRPaSktjlsv0_nH1K6aV", 'title' => '西游记精讲'],
-                ["id" => "PL_sOpTJkyWnAeaM_DZvgXyHqJgt2xX7fV", 'title' => '汤姆叔叔的小屋'],
-                ["id" => "PL_sOpTJkyWnAH95cdSnLg6DNrylLsu4MA", 'title' => '简爱'],
-                ["id" => "PL_sOpTJkyWnB7WT3ukZVq92j47q3qDxdd", 'title' => '乌合之众'],
-                ["id" => "PL_sOpTJkyWnDWW_dE67EMwlNaCRB4SfFx", 'title' => '战争与和平'],
-                ["id" => "PL_sOpTJkyWnD-U9p6ykLtsO6M0ghTmeCW", 'title' => '昆虫记'],
-                ["id" => "PL_sOpTJkyWnB_abdRUng2s-SoOrw0xqB9", 'title' => '神曲'],
-                ["id" => "PL_sOpTJkyWnCDfIzb43w_ObbtjApRxAMR", 'title' => '日瓦戈医生'],
-                ["id" => "PL_sOpTJkyWnBQZXF3Dw_QqkILQEUeQIMh", 'title' => '围城'],
-                ["id" => "PL_sOpTJkyWnBvkuJzr8qIwoBT3w7OK_ul", 'title' => '骆驼祥子'],
-                ["id" => "PL_sOpTJkyWnBY_MpWusnEtwailn546EYV", 'title' => '呼啸山庄'],
-                ["id" => "PL_sOpTJkyWnCIa3R2IVUZJljWFfNLK8gf", 'title' => '双城计'],
-                ["id" => "PL_sOpTJkyWnDyMyzNd8apjrxvKNkEvgRx", 'title' => '雾都孤儿'],
-                ["id" => "PL_sOpTJkyWnBmIGMm6o0_zJ5bdReIeHR0", 'title' => '鲁滨逊漂流记'],
-                ["id" => "PL_sOpTJkyWnCAUkq4iDr1aMcvNZ2YR37w", 'title' => '巴黎圣母院'],
-                ["id" => "PL_sOpTJkyWnDZEt7aQo4LNHrz3eOcTqrd", 'title' => '包法力夫人'],
-                ["id" => "PL_sOpTJkyWnAtP1Nr4wUfCpKZwkcsRHxv", 'title' => '红与黑'],
-                ["id" => "PL_sOpTJkyWnDGEt9OfloRcP_ER8zPrrQE", 'title' => '灿烂千阳'],
-                ["id" => "PL_sOpTJkyWnDoy6jPjJBtXFT48zDW8eus", 'title' => '悲惨世界'],
-                ["id" => "PL_sOpTJkyWnBOGAy9suw_w3lT4da2tF_u", 'title' => '傲慢与偏见'],
-                ["id" => "PL_sOpTJkyWnAPhHAnA7E9fQBafVH4U4Vw", 'title' => '白夜行'],
-                ["id" => "PL_sOpTJkyWnByw3T9x59knNfOcaI8Ozmx", 'title' => '苔丝'],
-                ["id" => "PL_sOpTJkyWnCcp7hW1-Fwfm4rNFsr4GAF", 'title' => '复活'],
-                ["id" => "PL_sOpTJkyWnB9URu4zW8fJuKvNCDsrzqK", 'title' => '霍乱时期的爱情'],
-                ["id" => "PL_sOpTJkyWnCZohPj2g2jUozF8lswZ5so", 'title' => '百年孤独'],
-                ["id" => "PL_sOpTJkyWnCT7dwuRgQNdgkYAMzWXHdP", 'title' => '欧亨利'],
+                ['id' => 'PL_sOpTJkyWnAbZRPaSktjlsv0_nH1K6aV', 'title' => '西游记精讲'],
+                ['id' => 'PL_sOpTJkyWnAeaM_DZvgXyHqJgt2xX7fV', 'title' => '汤姆叔叔的小屋'],
+                ['id' => 'PL_sOpTJkyWnAH95cdSnLg6DNrylLsu4MA', 'title' => '简爱'],
+                ['id' => 'PL_sOpTJkyWnB7WT3ukZVq92j47q3qDxdd', 'title' => '乌合之众'],
+                ['id' => 'PL_sOpTJkyWnDWW_dE67EMwlNaCRB4SfFx', 'title' => '战争与和平'],
+                ['id' => 'PL_sOpTJkyWnD-U9p6ykLtsO6M0ghTmeCW', 'title' => '昆虫记'],
+                ['id' => 'PL_sOpTJkyWnB_abdRUng2s-SoOrw0xqB9', 'title' => '神曲'],
+                ['id' => 'PL_sOpTJkyWnCDfIzb43w_ObbtjApRxAMR', 'title' => '日瓦戈医生'],
+                ['id' => 'PL_sOpTJkyWnBQZXF3Dw_QqkILQEUeQIMh', 'title' => '围城'],
+                ['id' => 'PL_sOpTJkyWnBvkuJzr8qIwoBT3w7OK_ul', 'title' => '骆驼祥子'],
+                ['id' => 'PL_sOpTJkyWnBY_MpWusnEtwailn546EYV', 'title' => '呼啸山庄'],
+                ['id' => 'PL_sOpTJkyWnCIa3R2IVUZJljWFfNLK8gf', 'title' => '双城计'],
+                ['id' => 'PL_sOpTJkyWnDyMyzNd8apjrxvKNkEvgRx', 'title' => '雾都孤儿'],
+                ['id' => 'PL_sOpTJkyWnBmIGMm6o0_zJ5bdReIeHR0', 'title' => '鲁滨逊漂流记'],
+                ['id' => 'PL_sOpTJkyWnCAUkq4iDr1aMcvNZ2YR37w', 'title' => '巴黎圣母院'],
+                ['id' => 'PL_sOpTJkyWnDZEt7aQo4LNHrz3eOcTqrd', 'title' => '包法力夫人'],
+                ['id' => 'PL_sOpTJkyWnAtP1Nr4wUfCpKZwkcsRHxv', 'title' => '红与黑'],
+                ['id' => 'PL_sOpTJkyWnDGEt9OfloRcP_ER8zPrrQE', 'title' => '灿烂千阳'],
+                ['id' => 'PL_sOpTJkyWnDoy6jPjJBtXFT48zDW8eus', 'title' => '悲惨世界'],
+                ['id' => 'PL_sOpTJkyWnBOGAy9suw_w3lT4da2tF_u', 'title' => '傲慢与偏见'],
+                ['id' => 'PL_sOpTJkyWnAPhHAnA7E9fQBafVH4U4Vw', 'title' => '白夜行'],
+                ['id' => 'PL_sOpTJkyWnByw3T9x59knNfOcaI8Ozmx', 'title' => '苔丝'],
+                ['id' => 'PL_sOpTJkyWnCcp7hW1-Fwfm4rNFsr4GAF', 'title' => '复活'],
+                ['id' => 'PL_sOpTJkyWnB9URu4zW8fJuKvNCDsrzqK', 'title' => '霍乱时期的爱情'],
+                ['id' => 'PL_sOpTJkyWnCZohPj2g2jUozF8lswZ5so', 'title' => '百年孤独'],
+                ['id' => 'PL_sOpTJkyWnCT7dwuRgQNdgkYAMzWXHdP', 'title' => '欧亨利'],
             ];
 
             $oriKeyword = substr($keyword, 1, 3);
@@ -206,19 +206,21 @@ class Beta
             $playListId = $playList['id'];
             $playListTitle = $playList['title'];
 
-            $cacheKey = "resources." . $keyword;
+            $cacheKey = 'resources.'.$keyword;
             $items = Cache::get($cacheKey, false);
-            
-            if (!$items) {
+
+            if (! $items) {
                 try {
                     $url = config('x-resources.r2_pub_domain')."/playlist/{$playListId}/{$playListId}.txt";
                     $response = Http::get($url);
                     $ids = explode(PHP_EOL, $response->body());
                     $items = [];
                     foreach ($ids as $key => $yid) {
-                        if (!$yid) continue;
+                        if (! $yid) {
+                            continue;
+                        }
                         $url = config('x-resources.r2_pub_domain')."/playlist/{$playListId}/{$yid}.info.json";
-                        
+
                         $json = Http::get($url)->json();
                         $key = null;
                         foreach ($json['chapters'] as $key => $chapter) {
@@ -238,13 +240,13 @@ class Beta
                     ], ['metric' => 'Tpehoc', 'keyword' => $keyword]);
                 }
             }
-            
-            if (!empty($items)) {
+
+            if (! empty($items)) {
                 $thumbnail = isset($json['thumbnail']) ? $json['thumbnail'] : '';
                 $total = count($items);
                 $index = now()->format('z') % ($total + 1);
                 $item = $items[$index];
-                
+
                 return ResourceResponse::music([
                     'url' => config('x-resources.r2_share_audio')."/playlist/{$playListId}/{$item['url']}",
                     'title' => "($index/$total)".$playListTitle,
@@ -254,72 +256,70 @@ class Beta
             }
         }
 
-        // 797 罗门,教牧辅导 - COMPLETE VERSION from original (51 items!)
+        // 797 罗门,教牧辅导（我是好牧人）- 共 52 集，教学顺序 items[i] 对应 mgs/{i+1}.mp3
         if ($keyword == '797') {
             $image = 'https://zgtai.com/wp-content/uploads/Luo/luo-36.jpg';
             $items = [
-                "传道人的神圣呼召 (1)",
-                "传道人的神圣呼召 (2)", 
-                "传道人的品格塑造 (1)",
-                "传道人的品格塑造 (2)",
-                "教牧人员的装备-有关读书",
-                "传道人的角色与职份 (1)",
-                "传道人的角色与职份 (2)",
-                "传道人的角色与职份 (3)",
-                "教牧的同工关系 (1)",
-                "教牧的同工关系 (2)",
-                "传道人事奉的危机 (1)",
-                "传道人事奉的危机 (2)",
-                "教牧人员的感情陷阱 (1)",
-                "教牧人员的感情陷阱 (2)",
-                "教牧人员的待遇问题 (1)",
-                "教牧人员的待遇问题 (2)",
-                "教牧人员冲突的处理",
-                "教牧人员特有的危险",
-                "教牧人员与教会纪律 (1)",
-                "教牧人员与教会纪律 (2)",
-                "教牧人员的牧养工作 (1)",
-                "教牧人员的牧养工作 (2)",
-                "教牧人员的属灵危机-耗尽 (1)",
-                "教牧人员的属灵危机-耗尽 (2)",
-                "教牧人员与讲道 (1)",
-                "教牧人员与讲道 (2)",
-                "传道人的家庭",
-                "师母的角色扮演",
-                "教牧人员与门徒训练 (1)",
-                "教牧人员与门徒训练 (2)",
-                "主日崇拜的计划与进行",
-                "祷告聚会的计划与进行",
-                "教牧人员与圣餐的举行",
-                "教牧人员与浸礼的举行",
-                "教会长老执事的选择 (1)",
-                "教会长老执事的选择 (2)",
-                "弟兄姊妹转换教会的危机与转机",
-                "教牧人员与事奉工场的转换",
-                "教牧人员与宣教异象 (1)",
-                "教牧人员与宣教异象 (2)",
-                "教牧人员与教会增长",
-                "教牧人员的压力与能力",
-                "教牧人员与信徒皆祭司 (1)",
-                "教牧人员与信徒皆祭司 (2)",
-                "再思教牧人员的家庭生活",
-                "再思教牧人员与冲突处理",
-                "教牧人员与辅导",
-                "传道人的生命与事奉",
-                "教牧人员(教会)与社会责任",
-                "教牧人员的受伤与医治",
-                "教牧人员与十字架的道路 (1)",
-                "教牧人员与十字架的道路 (2)",
+                '传道人的神圣呼召 (1)',
+                '传道人的神圣呼召 (2)',
+                '传道人的品格塑造 (1)',
+                '传道人的品格塑造 (2)',
+                '教牧人员的装备-有关读书',
+                '传道人的角色与职份 (1)',
+                '传道人的角色与职份 (2)',
+                '传道人的角色与职份 (3)',
+                '教牧的同工关系 (1)',
+                '教牧的同工关系 (2)',
+                '传道人事奉的危机 (1)',
+                '传道人事奉的危机 (2)',
+                '教牧人员的感情陷阱 (1)',
+                '教牧人员的感情陷阱 (2)',
+                '教牧人员的待遇问题 (1)',
+                '教牧人员的待遇问题 (2)',
+                '教牧人员冲突的处理',
+                '教牧人员特有的危险',
+                '教牧人员与教会纪律 (1)',
+                '教牧人员与教会纪律 (2)',
+                '教牧人员的牧养工作 (1)',
+                '教牧人员的牧养工作 (2)',
+                '教牧人员的属灵危机-耗尽 (1)',
+                '教牧人员的属灵危机-耗尽 (2)',
+                '教牧人员与讲道 (1)',
+                '教牧人员与讲道 (2)',
+                '传道人的家庭',
+                '师母的角色扮演',
+                '教牧人员与门徒训练 (1)',
+                '教牧人员与门徒训练 (2)',
+                '主日崇拜的计划与进行',
+                '祷告聚会的计划与进行',
+                '教牧人员与圣餐的举行',
+                '教牧人员与浸礼的举行',
+                '教会长老执事的选择 (1)',
+                '教会长老执事的选择 (2)',
+                '弟兄姊妹转换教会的危机与转机',
+                '教牧人员与事奉工场的转换',
+                '教牧人员与宣教异象 (1)',
+                '教牧人员与宣教异象 (2)',
+                '教牧人员与教会增长',
+                '教牧人员的压力与能力',
+                '教牧人员与信徒皆祭司 (1)',
+                '教牧人员与信徒皆祭司 (2)',
+                '再思教牧人员的家庭生活',
+                '再思教牧人员与冲突处理',
+                '教牧人员与辅导',
+                '传道人的生命与事奉',
+                '教牧人员(教会)与社会责任',
+                '教牧人员的受伤与医治',
+                '教牧人员与十字架的道路 (1)',
+                '教牧人员与十字架的道路 (2)',
             ];
-            $items = array_reverse($items);
             $total = count($items);
             $index = now()->addDay(1)->format('z') % $total;
-            $item = $items[$index];
-            $displayIndex = str_pad($index + 1, 2, '0', STR_PAD_LEFT);
-            
+            $fileNo = str_pad($index + 1, 2, '0', STR_PAD_LEFT);
+
             return ResourceResponse::music([
-                'url' => config('x-resources.r2_share_audio')."/zgtai.com/mgs/" . $displayIndex . ".mp3",
-                'title' => "({$displayIndex}/{$total})".$item,
+                'url' => config('x-resources.r2_share_audio')."/797我是好牧人/{$fileNo}.mp3",
+                'title' => "({$fileNo}/{$total})".$items[$index],
                 'description' => '罗门,我是好牧人',
                 'image' => $image,
             ], ['metric' => 'Tpehoc', 'keyword' => $keyword]);
@@ -328,63 +328,63 @@ class Beta
         // 785 古德恩系統神學導讀 - COMPLETE VERSION from original (61 chapters!)
         if ($keyword == '785') {
             $items = [
-                "第一章-系統神學簡介" => "ch01-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%80%E7%AB%A0-T.mp4",
-                "第二章-神的道" => "ch02-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E7%AB%A0-T.mp4",
-                "第三章-聖經乃正典" => "ch03-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E7%AB%A0-T.mp4",
-                "第四章-聖經四特徵之一 權威性" => "ch04-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E7%AB%A0-T.mp4",
-                "第五章-聖經的無誤性" => "ch05-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E7%AB%A0-T.mp4",
-                "第六章-聖經四特徵之二 清晰性" => "ch06-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%85%AD%E7%AB%A0-T.mp4",
-                "第七章-聖經四特徵之三 必須性" => "ch07-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%83%E7%AB%A0-T.mp4",
-                "第八章-聖經四特徵之四 充足性" => "ch08-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%85%AB%E7%AB%A0-T.mp4",
-                "第九章-神的存在" => "ch09-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B9%9D%E7%AB%A0-T.mp4",
-                "第十章-神的可知性" => "ch10-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E7%AB%A0-T.mp4",
-                "第十一章-神的性格－不可交通的屬性" => "ch11-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-T.mp4",
-                "第十二章-神的性格－可交通的屬性之一" => "ch12-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%BA%8C%E7%AB%A0-T.mp4",
-                "第十三章-神的性格－可交通的屬性之二" => "ch13-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0-T.mp4",
-                "第十四章-神的三一－三位一體" => "ch14-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E5%9B%9B%E7%AB%A0-T.mp4",
-                "第十五章-創造" => "ch15-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%BA%94%E7%AB%A0-T.mp4",
-                "第十六章-神的天命" => "ch16-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E5%85%AD%E7%AB%A0-T.mp4",
-                "第十七章-神蹟" => "ch17-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%B8%83%E7%AB%A0-T.mp4",
-                "第十八章-禱告" => "ch18-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E5%85%AB%E7%AB%A0-T.mp4",
-                "第十九章-天使" => "ch19-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%B9%9D%E7%AB%A0-T.mp4",
-                "第二十章-撒但與鬼魔" => "ch20-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E7%AB%A0-T.mp4",
-                "第二十一章-人的受造" => "ch21-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%80%E7%AB%A0-T.mp4",
-                "第二十二章-人有男性與女性" => "ch22-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%BA%8C%E7%AB%A0-T.mp4",
-                "第二十三章-人性的本質" => "ch23-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%89%E7%AB%A0-T.mp4",
-                "第二十三章-歷史見證" => "ch23-1-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%89%E7%AB%A0%E6%AD%B7%E5%8F%B2%E8%A6%8B%E8%AD%89-T.mp4",
-                "第二十四章-罪" => "ch24-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%9B%9B%E7%AB%A0-T.mp4",
-                "第二十五章-神人之間的約" => "ch25-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%BA%94%E7%AB%A0-T.mp4",
-                "第二十六章-基督的身位" => "ch26-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%85%AD%E7%AB%A0-T.mp4",
-                "第二十六章-歷史見證" => "ch26-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%85%AD%E7%AB%A0-%E6%AD%B7%E5%8F%B2%E8%A6%8B%E8%AD%89-T.mp4",
-                "第二十七章-基督的救贖" => "ch27-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%83%E7%AB%A0-T.mp4",
-                "第二十七章-歷史見證" => "ch27-1-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%83%E7%AB%A0-%E6%AD%B7%E5%8F%B2%E8%A6%8B%E8%AD%89-T.mp4",
-                "第二十八章-基督的復活與升天" => "ch28-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%85%AB%E7%AB%A0-T.mp4",
-                "第二十九章-基督的職份" => "ch29-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B9%9D%E7%AB%A0-T.mp4",
-                "第三十章-聖靈的工作" => "ch30-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E7%AB%A0-T.mp4",
-                "第三十二章-揀選與棄絕" => "ch32-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%BA%8C%E7%AB%A0-T.mp4",
-                "第三十二章-揀選與棄絕-歷史見證" => "ch32-1-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%BA%8C%E7%AB%A0-%E6%AD%B7%E5%8F%B2%E8%A6%8B%E8%AD%89-T.mp4",
-                "第三十三章-福音的呼召與有效的呼召" => "ch33-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%B8%89%E7%AB%A0-T.mp4",
-                "第三十四章-重生" => "ch34-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E5%9B%9B%E7%AB%A0-T.mp4",
-                "第三十五章-歸正－信心與悔改" => "ch35-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%BA%94%E7%AB%A0-T.mp4",
-                "第三十六章-稱義" => "ch36-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E5%85%AD%E7%AB%A0-T.mp4",
-                "第三十七章-兒子的名分" => "ch37-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%B8%83%E7%AB%A0-T.mp4",
-                "第三十八章-成聖" => "ch38-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E5%85%AB%E7%AB%A0-T.mp4",
-                "第三十九章-聖靈的洗與聖靈的充滿" => "ch39-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%B9%9D%E7%AB%A0-T.mp4",
-                "救恩的確據" => "%E5%A2%9E%E7%AF%87-%E6%95%91%E6%81%A9%E7%9A%84%E7%A2%BA%E6%93%9A-T.mp4",
-                "第四十章-聖徒的恆忍" => "ch40-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E7%AB%A0-T.mp4",
-                "第四十一章-死亡與居間階段" => "ch41-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%B8%80%E7%AB%A0-T.mp4",
-                "第四十二章-得榮－得著復活的身體" => "ch42-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%BA%8C%E7%AB%A0-T.mp4",
-                "第四十四章-教會的本質-標誌-目的" => "ch44-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E5%9B%9B%E7%AB%A0-T.mp4",
-                "第四十五章-教會的純潔與合一" => "ch45-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%BA%94%E7%AB%A0-T.mp4",
-                "第四十六章-教會的權力" => "ch46-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E5%85%AD%E7%AB%A0-T.mp4",
-                "第四十七章-教會管治的體制" => "ch47-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%B8%83%E7%AB%A0-T.mp4",
-                "第四十八章-神在教會內施恩之法" => "ch48-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E5%85%AB%E7%AB%A0-T.mp4",
-                "第四十九章-洗禮" => "ch49-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%B9%9D%E7%AB%A0-T.mp4",
-                "第五十章-主的晚餐" => "ch50-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E5%8D%81%E7%AB%A0-T.mp4",
-                "第五十一章-崇拜" => "ch51-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E5%8D%81%E4%B8%80%E7%AB%A0-T.mp4",
-                "第五十二章-靈恩﹕一般性的問題" => "ch52-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E5%8D%81%E4%BA%8C%E7%AB%A0-T.mp4",
-                "第五十三章-靈恩﹕特定的恩賜" => "ch53-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E5%8D%81%E4%B8%89%E7%AB%A0-T.mp4",
-                "第五十四章-基督的再來－何時﹖如何﹖" => "ch54-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E5%8D%81%E5%9B%9B%E7%AB%A0-T.mp4",
+                '第一章-系統神學簡介' => 'ch01-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%80%E7%AB%A0-T.mp4',
+                '第二章-神的道' => 'ch02-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E7%AB%A0-T.mp4',
+                '第三章-聖經乃正典' => 'ch03-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E7%AB%A0-T.mp4',
+                '第四章-聖經四特徵之一 權威性' => 'ch04-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E7%AB%A0-T.mp4',
+                '第五章-聖經的無誤性' => 'ch05-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E7%AB%A0-T.mp4',
+                '第六章-聖經四特徵之二 清晰性' => 'ch06-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%85%AD%E7%AB%A0-T.mp4',
+                '第七章-聖經四特徵之三 必須性' => 'ch07-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%83%E7%AB%A0-T.mp4',
+                '第八章-聖經四特徵之四 充足性' => 'ch08-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%85%AB%E7%AB%A0-T.mp4',
+                '第九章-神的存在' => 'ch09-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B9%9D%E7%AB%A0-T.mp4',
+                '第十章-神的可知性' => 'ch10-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E7%AB%A0-T.mp4',
+                '第十一章-神的性格－不可交通的屬性' => 'ch11-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-T.mp4',
+                '第十二章-神的性格－可交通的屬性之一' => 'ch12-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%BA%8C%E7%AB%A0-T.mp4',
+                '第十三章-神的性格－可交通的屬性之二' => 'ch13-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0-T.mp4',
+                '第十四章-神的三一－三位一體' => 'ch14-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E5%9B%9B%E7%AB%A0-T.mp4',
+                '第十五章-創造' => 'ch15-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%BA%94%E7%AB%A0-T.mp4',
+                '第十六章-神的天命' => 'ch16-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E5%85%AD%E7%AB%A0-T.mp4',
+                '第十七章-神蹟' => 'ch17-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%B8%83%E7%AB%A0-T.mp4',
+                '第十八章-禱告' => 'ch18-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E5%85%AB%E7%AB%A0-T.mp4',
+                '第十九章-天使' => 'ch19-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%8D%81%E4%B9%9D%E7%AB%A0-T.mp4',
+                '第二十章-撒但與鬼魔' => 'ch20-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E7%AB%A0-T.mp4',
+                '第二十一章-人的受造' => 'ch21-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%80%E7%AB%A0-T.mp4',
+                '第二十二章-人有男性與女性' => 'ch22-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%BA%8C%E7%AB%A0-T.mp4',
+                '第二十三章-人性的本質' => 'ch23-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%89%E7%AB%A0-T.mp4',
+                '第二十三章-歷史見證' => 'ch23-1-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%89%E7%AB%A0%E6%AD%B7%E5%8F%B2%E8%A6%8B%E8%AD%89-T.mp4',
+                '第二十四章-罪' => 'ch24-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%9B%9B%E7%AB%A0-T.mp4',
+                '第二十五章-神人之間的約' => 'ch25-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%BA%94%E7%AB%A0-T.mp4',
+                '第二十六章-基督的身位' => 'ch26-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%85%AD%E7%AB%A0-T.mp4',
+                '第二十六章-歷史見證' => 'ch26-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%85%AD%E7%AB%A0-%E6%AD%B7%E5%8F%B2%E8%A6%8B%E8%AD%89-T.mp4',
+                '第二十七章-基督的救贖' => 'ch27-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%83%E7%AB%A0-T.mp4',
+                '第二十七章-歷史見證' => 'ch27-1-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%83%E7%AB%A0-%E6%AD%B7%E5%8F%B2%E8%A6%8B%E8%AD%89-T.mp4',
+                '第二十八章-基督的復活與升天' => 'ch28-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%85%AB%E7%AB%A0-T.mp4',
+                '第二十九章-基督的職份' => 'ch29-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B9%9D%E7%AB%A0-T.mp4',
+                '第三十章-聖靈的工作' => 'ch30-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E7%AB%A0-T.mp4',
+                '第三十二章-揀選與棄絕' => 'ch32-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%BA%8C%E7%AB%A0-T.mp4',
+                '第三十二章-揀選與棄絕-歷史見證' => 'ch32-1-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%BA%8C%E7%AB%A0-%E6%AD%B7%E5%8F%B2%E8%A6%8B%E8%AD%89-T.mp4',
+                '第三十三章-福音的呼召與有效的呼召' => 'ch33-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%B8%89%E7%AB%A0-T.mp4',
+                '第三十四章-重生' => 'ch34-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E5%9B%9B%E7%AB%A0-T.mp4',
+                '第三十五章-歸正－信心與悔改' => 'ch35-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%BA%94%E7%AB%A0-T.mp4',
+                '第三十六章-稱義' => 'ch36-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E5%85%AD%E7%AB%A0-T.mp4',
+                '第三十七章-兒子的名分' => 'ch37-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%B8%83%E7%AB%A0-T.mp4',
+                '第三十八章-成聖' => 'ch38-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E5%85%AB%E7%AB%A0-T.mp4',
+                '第三十九章-聖靈的洗與聖靈的充滿' => 'ch39-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%B8%89%E5%8D%81%E4%B9%9D%E7%AB%A0-T.mp4',
+                '救恩的確據' => '%E5%A2%9E%E7%AF%87-%E6%95%91%E6%81%A9%E7%9A%84%E7%A2%BA%E6%93%9A-T.mp4',
+                '第四十章-聖徒的恆忍' => 'ch40-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E7%AB%A0-T.mp4',
+                '第四十一章-死亡與居間階段' => 'ch41-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%B8%80%E7%AB%A0-T.mp4',
+                '第四十二章-得榮－得著復活的身體' => 'ch42-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%BA%8C%E7%AB%A0-T.mp4',
+                '第四十四章-教會的本質-標誌-目的' => 'ch44-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E5%9B%9B%E7%AB%A0-T.mp4',
+                '第四十五章-教會的純潔與合一' => 'ch45-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%BA%94%E7%AB%A0-T.mp4',
+                '第四十六章-教會的權力' => 'ch46-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E5%85%AD%E7%AB%A0-T.mp4',
+                '第四十七章-教會管治的體制' => 'ch47-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%B8%83%E7%AB%A0-T.mp4',
+                '第四十八章-神在教會內施恩之法' => 'ch48-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E5%85%AB%E7%AB%A0-T.mp4',
+                '第四十九章-洗禮' => 'ch49-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%B9%9D%E7%AB%A0-T.mp4',
+                '第五十章-主的晚餐' => 'ch50-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E5%8D%81%E7%AB%A0-T.mp4',
+                '第五十一章-崇拜' => 'ch51-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E5%8D%81%E4%B8%80%E7%AB%A0-T.mp4',
+                '第五十二章-靈恩﹕一般性的問題' => 'ch52-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E5%8D%81%E4%BA%8C%E7%AB%A0-T.mp4',
+                '第五十三章-靈恩﹕特定的恩賜' => 'ch53-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E5%8D%81%E4%B8%89%E7%AB%A0-T.mp4',
+                '第五十四章-基督的再來－何時﹖如何﹖' => 'ch54-%E5%8F%A4%E5%BE%B7%E6%81%A9%E7%B3%BB%E7%B5%B1%E7%A5%9E%E5%AD%B8-%E7%AC%AC%E4%BA%94%E5%8D%81%E5%9B%9B%E7%AB%A0-T.mp4',
             ];
             $total = count($items);
             $index = now()->format('z') % $total;
@@ -399,19 +399,19 @@ class Beta
                 }
                 $count++;
             }
-            $mp4Url = 'https://www.alopen.org/Portals/0/Downloads/' . $url;
+            $mp4Url = 'https://www.alopen.org/Portals/0/Downloads/'.$url;
 
             $video = ResourceResponse::link([
                 'url' => $mp4Url,
                 'title' => '古德恩系統神學導讀 (張麟至牧師)',
-                'description' => "(" . ($index + 1) . "/{$total})" . $title,
+                'description' => '('.($index + 1)."/{$total})".$title,
                 'image' => 'https://www.alopen.org/portals/0/Images/PastorPaulChangPhoto.jpg',
             ], ['metric' => 'Tpehoc', 'keyword' => $keyword, 'type' => 'video']);
 
             return ResourceResponse::music([
                 'url' => $mp4Url,
                 'title' => '古德恩系統神學導讀 (張麟至牧師)',
-                'description' => "(" . ($index + 1) . "/{$total})" . $title,
+                'description' => '('.($index + 1)."/{$total})".$title,
             ], ['metric' => 'Tpehoc', 'keyword' => $keyword], $video);
         }
 
@@ -419,68 +419,66 @@ class Beta
         if ($keyword == '798') {
             $image = 'https://zgtai.com/wp-content/uploads/Luo/luo-36.jpg';
             $items = [
-                "作主门徒的挑战",
-                "耶稣与门徒", 
-                "寻找人作门徒（一）",
-                "寻找人作门徒（二）",
-                "门徒训练的目标(一)：有关读经",
-                "门徒训练的目标(二)：祷告的操练",
-                "门徒训练的目标(三)：作见证的操练",
-                "门徒训练的目标(四)：团契生活的操练",
-                "从信徒到门徒",
-                "门徒训练者的操练",
-                "门徒的纪律生活",
-                "门徒训练与教会增长",
-                "门徒训练与配搭事奉",
-                "门徒训练与恩赐操练",
-                "初信者的栽培计划",
-                "门徒进阶训练的栽培计划",
-                "门徒的品格操练－话语和舌头的控制",
-                "门徒训练的栽培计划",
-                "迈向灵性的成熟（一）",
-                "迈向灵性的成熟（二）",
-                "门徒的情绪管理（一）",
-                "门徒的情绪管理（二）",
-                "成为热心事奉的门徒",
-                "作门徒与钱财的好管家",
-                "门徒敬拜的操练（一）",
-                "门徒敬拜的操练（二）",
-                "门徒家庭崇拜(家庭祭坛)的建立",
-                "如何带领归纳式研经法(查经班)",
-                "如何带领一个小组",
-                "展开门徒训练者的服事",
-                "过敬虔的门徒生活",
-                "如何明白神的旨意",
-                "门徒与讲道操练（一）",
-                "门徒与讲道操练（二）",
-                "作门徒必须终身学习",
-                "门徒与十字架的道理",
-                "如何听讲道？",
-                "门徒在苦难中的操练",
-                "寻找合神心意的领袖",
-                "作领袖的代价与陷阱",
-                "学习倾听神的声音",
-                "如何训练门徒信心的功课",
-                "攻克己身的挑战",
-                "基督徒团契生活的操练",
-                "门徒的圣洁与成圣生活",
-                "门徒的职业与工作观",
-                "门徒的时间管理与灵修生活",
-                "门徒的进修生活与成长",
-                "门徒祷告生活的再思",
-                "领袖的拣选与榜样",
-                "门徒训练与圣灵的建造工作（一）",
-                "门徒训练与圣灵的建造工作（二）",
+                '作主门徒的挑战',
+                '耶稣与门徒',
+                '寻找人作门徒（一）',
+                '寻找人作门徒（二）',
+                '门徒训练的目标(一)：有关读经',
+                '门徒训练的目标(二)：祷告的操练',
+                '门徒训练的目标(三)：作见证的操练',
+                '门徒训练的目标(四)：团契生活的操练',
+                '从信徒到门徒',
+                '门徒训练者的操练',
+                '门徒的纪律生活',
+                '门徒训练与教会增长',
+                '门徒训练与配搭事奉',
+                '门徒训练与恩赐操练',
+                '初信者的栽培计划',
+                '门徒进阶训练的栽培计划',
+                '门徒的品格操练－话语和舌头的控制',
+                '门徒训练的栽培计划',
+                '迈向灵性的成熟（一）',
+                '迈向灵性的成熟（二）',
+                '门徒的情绪管理（一）',
+                '门徒的情绪管理（二）',
+                '成为热心事奉的门徒',
+                '作门徒与钱财的好管家',
+                '门徒敬拜的操练（一）',
+                '门徒敬拜的操练（二）',
+                '门徒家庭崇拜(家庭祭坛)的建立',
+                '如何带领归纳式研经法(查经班)',
+                '如何带领一个小组',
+                '展开门徒训练者的服事',
+                '过敬虔的门徒生活',
+                '如何明白神的旨意',
+                '门徒与讲道操练（一）',
+                '门徒与讲道操练（二）',
+                '作门徒必须终身学习',
+                '门徒与十字架的道理',
+                '如何听讲道？',
+                '门徒在苦难中的操练',
+                '寻找合神心意的领袖',
+                '作领袖的代价与陷阱',
+                '学习倾听神的声音',
+                '如何训练门徒信心的功课',
+                '攻克己身的挑战',
+                '基督徒团契生活的操练',
+                '门徒的圣洁与成圣生活',
+                '门徒的职业与工作观',
+                '门徒的时间管理与灵修生活',
+                '门徒的进修生活与成长',
+                '门徒祷告生活的再思',
+                '领袖的拣选与榜样',
+                '门徒训练与圣灵的建造工作（一）',
+                '门徒训练与圣灵的建造工作（二）',
             ];
-            $items = array_reverse($items);
             $total = count($items);
             $index = now()->addDay(1)->format('z') % $total;
-            $item = $items[$index];
-            $displayIndex = str_pad($index + 1, 2, '0', STR_PAD_LEFT);
-            
+            $fileNo = str_pad($index + 1, 2, '0', STR_PAD_LEFT);
+
             return ResourceResponse::music([
-                'url' => 'https://r2.savefamily.net/zgtai.com/mds/'.$displayIndex.'.mp3',
-                'title' => "({$displayIndex}/{$total})".$item,
+                'url' => config('x-resources.r2_share_audio')."/798门徒训练/{$fileNo}.mp3",
+                'title' => "({$fileNo}/{$total})".$items[$index],
                 'description' => '罗门,门徒训练',
                 'image' => $image,
             ], ['metric' => 'Tpehoc', 'keyword' => $keyword]);
@@ -505,7 +503,7 @@ class Beta
             $cacheKey = 'xbot.keyword.'.$keyword;
             $data = Cache::get($cacheKey);
 
-            if (!$data) {
+            if (! $data) {
                 try {
                     $response = Http::get($url);
                     if ($response->failed()) {
@@ -534,7 +532,7 @@ class Beta
                         }
                     }
 
-                    if (!$title) {
+                    if (! $title) {
                         return null;
                     }
 
@@ -578,24 +576,24 @@ class Beta
         // 781 新媒体宣教 - COMPLETE VERSION from original (12 courses!)
         if ($keyword == '781') {
             $items = [
-                "新媒体宣教Espresso1：人人宣教",
-                "新媒体宣教Espresso2：朋友圈是最大的禾场",
-                "新媒体宣教Espresso3：去中心化",
-                "新媒体宣教Espresso4：从善用到塑造",
-                "新媒体宣教Espresso5：突破同温层",
-                "新媒体宣教Espresso6：道成了肉身",
-                "新媒体宣教Espresso7：信、望、爱",
-                "新媒体宣教Espresso8：挑战与机会",
-                "新媒体宣教Espresso9：高度处境化",
-                "新媒体宣教Espresso 10：标题党 蹭热点",
-                "新媒体宣教Espresso11：用爱心说诚实话",
-                "新媒体宣教Espresso12：宣教要成为一种生活方式",
+                '新媒体宣教Espresso1：人人宣教',
+                '新媒体宣教Espresso2：朋友圈是最大的禾场',
+                '新媒体宣教Espresso3：去中心化',
+                '新媒体宣教Espresso4：从善用到塑造',
+                '新媒体宣教Espresso5：突破同温层',
+                '新媒体宣教Espresso6：道成了肉身',
+                '新媒体宣教Espresso7：信、望、爱',
+                '新媒体宣教Espresso8：挑战与机会',
+                '新媒体宣教Espresso9：高度处境化',
+                '新媒体宣教Espresso 10：标题党 蹭热点',
+                '新媒体宣教Espresso11：用爱心说诚实话',
+                '新媒体宣教Espresso12：宣教要成为一种生活方式',
             ];
             $total = count($items);
             $index = now()->subDay()->format('z') % $total;
             $item = $items[$index];
             $titles = explode('：', $item);
-            $mp3 = config('x-resources.jtoday_domain')."/wp-content/uploads/2022/08/mavmm0".str_pad($index + 1, 2, '0', STR_PAD_LEFT).".mp3";
+            $mp3 = config('x-resources.jtoday_domain').'/wp-content/uploads/2022/08/mavmm0'.str_pad($index + 1, 2, '0', STR_PAD_LEFT).'.mp3';
 
             return ResourceResponse::music([
                 'url' => $mp3,

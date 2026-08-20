@@ -2,10 +2,10 @@
 
 use App\Resources\Handlers\Beta;
 use App\Resources\ResourceResponse;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
     Config::set('x-resources.r2_share_audio', 'https://r2.example.com');
@@ -13,7 +13,7 @@ beforeEach(function () {
 });
 
 it('resolves 794 (信心是一把梯子) with complete data', function () {
-    $handler = new Beta();
+    $handler = new Beta;
     $result = $handler->resolve('794');
 
     expect($result)->toBeInstanceOf(ResourceResponse::class);
@@ -31,15 +31,15 @@ it('resolves 795 (有声书系列) with complete data', function () {
         'https://pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/playlist/PL_sOpTJkyWnAbZRPaSktjlsv0_nH1K6aV/PL_sOpTJkyWnAbZRPaSktjlsv0_nH1K6aV.txt' => Http::response("video1\nvideo2"),
         'https://pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/playlist/PL_sOpTJkyWnAbZRPaSktjlsv0_nH1K6aV/video1.info.json' => Http::response([
             'chapters' => [['title' => 'Chapter 1']],
-            'thumbnail' => 'thumb1.jpg'
+            'thumbnail' => 'thumb1.jpg',
         ]),
         'https://pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/playlist/PL_sOpTJkyWnAbZRPaSktjlsv0_nH1K6aV/video2.info.json' => Http::response([
             'chapters' => [['title' => 'Chapter 2']],
-            'thumbnail' => 'thumb2.jpg'
+            'thumbnail' => 'thumb2.jpg',
         ]),
     ]);
 
-    $handler = new Beta();
+    $handler = new Beta;
     // 7950 is "西游记精讲"
     $result = $handler->resolve('7950');
 
@@ -49,20 +49,21 @@ it('resolves 795 (有声书系列) with complete data', function () {
     expect($result->data['description'])->toContain('By @LucyFM1999');
 });
 
-it('resolves 797 (罗门,教牧辅导) with complete data', function () {
-    $handler = new Beta();
+it('resolves 797 (罗门,教牧辅导 mgs) with complete data', function () {
+    $handler = new Beta;
     $result = $handler->resolve('797');
 
     expect($result)->toBeInstanceOf(ResourceResponse::class);
     expect($result->type)->toBe('music');
     expect($result->data['description'])->toBe('罗门,我是好牧人');
 
-    // The actual total for 797 seems to be 52 based on actual output
-    expect($result->data['title'])->toMatch('/\(\d+\/52\)/');
+    // 52 集，文件号与标题序号一致，指向 /797我是好牧人/{01..52}.mp3
+    expect($result->data['title'])->toMatch('/^\(\d{2}\/52\)/');
+    expect($result->data['url'])->toMatch('#/797我是好牧人/\d{2}\.mp3$#');
 });
 
 it('resolves 798 (罗门,门徒训练) with complete data', function () {
-    $handler = new Beta();
+    $handler = new Beta;
     $result = $handler->resolve('798');
 
     expect($result)->toBeInstanceOf(ResourceResponse::class);
@@ -74,7 +75,7 @@ it('resolves 798 (罗门,门徒训练) with complete data', function () {
 });
 
 it('resolves 785 (古德恩系統神學導讀) with complete data', function () {
-    $handler = new Beta();
+    $handler = new Beta;
     $result = $handler->resolve('785');
 
     expect($result)->toBeInstanceOf(ResourceResponse::class);
@@ -86,7 +87,7 @@ it('resolves 785 (古德恩系統神學導讀) with complete data', function () 
 });
 
 it('resolves 792 (基督教要义-导读) with complete data', function () {
-    $handler = new Beta();
+    $handler = new Beta;
     $result = $handler->resolve('792');
 
     expect($result)->toBeInstanceOf(ResourceResponse::class);
@@ -97,13 +98,13 @@ it('resolves 792 (基督教要义-导读) with complete data', function () {
 });
 
 it('resolves 799 (恩典365) with complete data', function () {
-    $url = 'https://www.tpehoc.org.tw' . Carbon::now('Asia/Shanghai')->format('/Y/m/');
+    $url = 'https://www.tpehoc.org.tw'.Carbon::now('Asia/Shanghai')->format('/Y/m/');
 
     Http::fake([
         $url => Http::response('<html><body><h3>Test Title</h3><div class="post-content">Test Description<source src="https://example.com/audio.mp3"></div></body></html>'),
     ]);
 
-    $handler = new Beta();
+    $handler = new Beta;
     $result = $handler->resolve('799');
 
     expect($result)->toBeInstanceOf(ResourceResponse::class);
@@ -113,7 +114,7 @@ it('resolves 799 (恩典365) with complete data', function () {
 });
 
 it('resolves 781 (新媒体宣教) with complete data', function () {
-    $handler = new Beta();
+    $handler = new Beta;
     $result = $handler->resolve('781');
 
     expect($result)->toBeInstanceOf(ResourceResponse::class);
