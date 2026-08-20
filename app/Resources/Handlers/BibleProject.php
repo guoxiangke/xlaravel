@@ -84,7 +84,7 @@ final class BibleProject
                 'description' => '来自 Bible Project',
             ], [
                 'metric' => class_basename(__CLASS__),
-                'keyword' => $keyword,
+                'keyword' => $offset,
                 'type' => 'audio',
             ]);
 
@@ -95,7 +95,7 @@ final class BibleProject
                 'image' => $pnglinks[$offset] ?? '',
             ], [
                 'metric' => class_basename(__CLASS__),
-                'keyword' => $keyword,
+                'keyword' => $offset,
                 'type' => 'video',
             ], $addition);
         }

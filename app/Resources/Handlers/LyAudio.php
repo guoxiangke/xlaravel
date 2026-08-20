@@ -164,7 +164,7 @@ class LyAudio
             'image' => $image,
         ], [
             'metric' => class_basename(__CLASS__),
-            'keyword' => $keyword,
+            'keyword' => $code,
             'type' => 'audio',
         ]);
     }
@@ -223,7 +223,12 @@ class LyAudio
             }
 
             $image = "https://txly2.net/images/program_banners/{$code}_prog_banner_sq.png";
-            $dateStr = str_replace($code, '', $item['alias']);
+
+            // 普通节目 alias 前缀=节目码(如 mw260820)，641-645 良院课程 alias 前缀=课程码(如 mavas128)
+            // 统一去掉字母前缀取后缀（日期或集数），避免课程码对不上导致整个 alias 进标题
+            $dateStr = in_array($keyword, [641, 642, 643, 644, 645])
+                ? preg_replace('/^[A-Za-z]+/', '', $item['alias'])
+                : str_replace($code, '', $item['alias']);
 
             return ResourceResponse::music([
                 'url' => $url,
@@ -232,7 +237,7 @@ class LyAudio
                 'image' => $image,
             ], [
                 'metric' => class_basename(__CLASS__),
-                'keyword' => $keyword,
+                'keyword' => $code,
                 'type' => 'audio',
             ]);
         } catch (\Exception $e) {
