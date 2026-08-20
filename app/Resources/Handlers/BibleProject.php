@@ -68,15 +68,18 @@ final class BibleProject
             if ($total === 0) {
                 return null;
             }
-            $offset = (now()->format('z') + 10) % $total;
+            // 对齐旧版选集：offset 取 1..total（用于显示与统计）
+            $offset = (now()->format('z') + 10) % $total + 1;
+            // 修掉旧版 offset==total 时的数组越界（total → 0）
+            $index = $offset % $total;
 
             $titles = $data[1];
             $mp4links = $data[2];
             $pnglinks = $data[3] ?? [];
 
             $r2ShareVideo = config('x-resources.r2_share_video', 'https://video.example.com');
-            $url = $r2ShareVideo.'/thebibleproject/'.basename($mp4links[$offset]);
-            $title = ($offset + 1)."/{$total} 【bibleproject】".$titles[$offset];
+            $url = $r2ShareVideo.'/thebibleproject/'.basename($mp4links[$index]);
+            $title = "{$offset}/{$total} 【bibleproject】".$titles[$index];
 
             $addition = ResourceResponse::music([
                 'url' => $url,
@@ -92,7 +95,7 @@ final class BibleProject
                 'url' => $url,
                 'title' => $title,
                 'description' => '来自 Bible Project',
-                'image' => $pnglinks[$offset] ?? '',
+                'image' => $pnglinks[$index] ?? '',
             ], [
                 'metric' => class_basename(__CLASS__),
                 'keyword' => $offset,
