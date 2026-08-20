@@ -212,8 +212,7 @@ class LyAudio
 
             // 替换CDN域名
             $url = str_replace(
-                'https://x.lydt.work/storage/',
-                'https://stlb.work/storage/',
+                ['https://x.lydt.work/storage/', 'https://stlb.work/storage/'],
                 'https://d3ml8yyp1h3hy5.cloudfront.net/',
                 $url
             );
