@@ -79,7 +79,7 @@ final class BibleProject
 
             $r2ShareVideo = config('x-resources.r2_share_video', 'https://video.example.com');
             $url = $r2ShareVideo.'/thebibleproject/'.basename($mp4links[$index]);
-            $title = "{$offset}/{$total} 【bibleproject】".$titles[$index];
+            $title = "{$offset}/{$total} 【{$keyword}】".$titles[$index];
 
             $addition = ResourceResponse::music([
                 'url' => $url,
