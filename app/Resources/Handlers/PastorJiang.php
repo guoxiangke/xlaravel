@@ -27,7 +27,7 @@ class PastorJiang
                 'title' => $playlist['title'],
             ];
         }
-        
+
         // Sort by keyword to be nice
         usort($list, fn ($a, $b) => $a['keyword'] <=> $b['keyword']);
 
@@ -110,6 +110,7 @@ class PastorJiang
     {
         try {
             $url = "{$baseUrl}/{$who}_{$type}.json";
+
             $json = Http::get($url)->json();
             $vid = $json['id'];
 
@@ -130,12 +131,15 @@ class PastorJiang
         $urlBase = $isVideo ? config('x-resources.r2_share_video') : config('x-resources.r2_share_audio');
         $extension = $isVideo ? 'mp4' : 'm4a';
 
+        $thumbnails = $json['thumbnails'] ?? [];
+        $image = $thumbnails[count($thumbnails) - 1]['url'] ?? $thumbnails[0]['url'] ?? '';
+
         $data = [
             'url' => $urlBase."/{$who}/{$vid}.{$extension}",
             'title' => $json['title'],
             'description' => '江涌流牧师的频道',
             'vid' => $vid,
-            'image' => $json['thumbnails'][3]['url'],
+            'image' => $image,
         ];
 
         $statistics = [

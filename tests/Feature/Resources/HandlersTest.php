@@ -17,7 +17,7 @@ it('can resolve keywords from all handlers', function (string $keyword, string $
         'www.tpehoc.org.tw/*' => Http::response('<html><body><h3 class="post-content-outer"><a href="link">Title</a></h3><div class="post-content">Description</div><source src="test.mp3"></body></html>'),
         'www.zanmei.ai/*' => Http::response('<html><body><a href="/song/123.html">Title</a></body></html>'),
         'x.lydt.work/*' => Http::response(['data' => [['link' => 'test.mp3', 'alias' => 'fa260220', 'program' => ['name' => 'Test'], 'description' => 'Desc']]]),
-        'pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/youtube_channels/*' => Http::response(['id' => 'vid', 'title' => 'Title', 'thumbnails' => [3 => ['url' => 'img']]]),
+        'pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/youtube_channels/*' => Http::response(['id' => 'vid', 'title' => 'Title', 'thumbnails' => [['url' => 'img-low'], ['url' => 'img']]]),
         'pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/hland/*' => Http::response(array_fill(0, 100, ['title' => 'Title', 'url' => 'http://example.com/blog/123'])),
         'pub-6de883f3fd4a43c28675e9be668042c2.r2.dev/*' => Http::response(['list' => [['title' => 'Test', 'video_url' => 'test.mp3']], 'details' => [['author' => 'Author', 'img_url' => 'img', 'title' => 'Title']]]),
     ]);
