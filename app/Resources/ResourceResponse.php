@@ -75,7 +75,7 @@ class ResourceResponse implements Jsonable, JsonSerializable
     public static function videoGuide(string $code): self
     {
         $guide = self::text([
-            'content' => '👆观看视频？请复制上面👆的编码到 #小程序://真爱聆听/wpx2WE1YFqWsyOt 中粘贴后点ok',
+            'content' => config('x-resources.video_guide_text'),
         ]);
 
         return self::text(['content' => $code], [], $guide);
