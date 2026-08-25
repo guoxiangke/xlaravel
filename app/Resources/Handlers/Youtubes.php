@@ -55,6 +55,7 @@ class Youtubes
                     'type' => 'audio',
                 ]);
 
+                $videoData->addition = ResourceResponse::videoGuide("tmpshare/{$vid}");
                 $audioData->addition = $videoData;
 
                 $key = 'youtube-vids-need-download';

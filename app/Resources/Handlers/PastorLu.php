@@ -66,6 +66,7 @@ class PastorLu
                 ]
             );
 
+            $videoResponse->addition = ResourceResponse::videoGuide('@pastorpaulqiankunlu618/'.$vid);
             $audioResponse->addition = $videoResponse;
 
             return $audioResponse;

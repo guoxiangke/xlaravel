@@ -61,7 +61,13 @@ it('resolves keyword 801 to today PastorLu daily message via scrapeChannel', fun
         ->assertJsonPath('statistics.type', 'audio')
         ->assertJsonPath('addition.type', 'link')
         ->assertJsonPath('addition.data.url', $expectedVideo)
-        ->assertJsonPath('addition.statistics.type', 'video');
+        ->assertJsonPath('addition.statistics.type', 'video')
+        // 视频 link 下挂两条嵌套文本引导（无统计）
+        ->assertJsonPath('addition.addition.type', 'text')
+        ->assertJsonPath('addition.addition.data.content', '@pastorpaulqiankunlu618/_R0rYaNDdts')
+        ->assertJsonMissingPath('addition.addition.statistics')
+        ->assertJsonPath('addition.addition.addition.type', 'text')
+        ->assertJsonMissingPath('addition.addition.addition.statistics');
 });
 
 it('falls back to the first video when no title matches today', function () {

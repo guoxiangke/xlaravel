@@ -66,4 +66,18 @@ class ResourceResponse implements Jsonable, JsonSerializable
     {
         return new self('link', $data, $addition, $statistics);
     }
+
+    /**
+     * 视频观看引导：两条嵌套的文本消息（不带统计）
+     * 1) 视频编码（供用户复制粘贴到「真爱聆听」小程序）
+     * 2) 引导文案
+     */
+    public static function videoGuide(string $code): self
+    {
+        $guide = self::text([
+            'content' => '👆观看视频？请复制上面👆的编码到 #小程序://真爱聆听/wpx2WE1YFqWsyOt 中粘贴后点ok',
+        ]);
+
+        return self::text(['content' => $code], [], $guide);
+    }
 }
