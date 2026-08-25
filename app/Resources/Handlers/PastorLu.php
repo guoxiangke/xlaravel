@@ -63,22 +63,10 @@ class PastorLu
                     'metric' => 'PastorLu',
                     'keyword' => '801',
                     'type' => 'video',
-                ],
-                $audioResponse
+                ]
             );
 
-            // Return audio first with video as addition (as per original logic)
-            // But avoid circular reference by not setting videoResponse's addition
-            $videoResponseForAddition = ResourceResponse::link(
-                $data['data'],
-                [
-                    'metric' => 'PastorLu',
-                    'keyword' => '801',
-                    'type' => 'video',
-                ]
-                // No addition to avoid circular reference
-            );
-            $audioResponse->addition = $videoResponseForAddition;
+            $audioResponse->addition = $videoResponse;
 
             return $audioResponse;
 
