@@ -4,7 +4,6 @@ namespace App\Resources\Handlers;
 
 use App\Resources\Helpers\YouTubeHelper;
 use App\Resources\ResourceResponse;
-use Illuminate\Support\Str;
 
 class Ren
 {
@@ -84,26 +83,8 @@ class Ren
         $url = config('x-resources.r2_share_audio')."/@{$who}/{$vid}.mp4";
         $image = "https://i.ytimg.com/vi/{$vid}/sddefault.jpg";
 
-        if (Str::startsWith($config['title'], '每日')) {
-            $description = '@LFC活力生命 每日更新';
-        } else {
-            $title = "【{$keyword}】{$config['title']} {$title}";
-            $description = $item->snippet->description;
-        }
-
-        $addition = null;
-        if (isset($config['alias'])) {
-            $alias = $config['alias'];
-            $fileName = $alias.date('ymd').'.mp4';
-            $url = config('x-resources.r2_share_audio')."/Ren/{$alias}/{$fileName}";
-
-            $addition = ResourceResponse::text([
-                'content' => "【{$keyword}】{$title}",
-            ]);
-
-            $title = "【{$keyword}】";
-            $description = '@LFC活力生命';
-        }
+        $title = "【{$keyword}】{$config['title']} {$title}";
+        $description = $item->snippet->description;
 
         $videoResponse = ResourceResponse::link([
             'url' => $url,
@@ -115,7 +96,7 @@ class Ren
             'metric' => class_basename(__CLASS__),
             'keyword' => $keyword,
             'type' => 'video',
-        ], $addition);
+        ]);
 
         if (! ($config['shorts'] ?? false)) {
             // Add audio version for non-shorts
