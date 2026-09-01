@@ -49,6 +49,7 @@ it('resolves keyword 801 to today PastorLu daily message via scrapeChannel', fun
 
     $expectedVideo = config('x-resources.r2_share_video').'/@pastorpaulqiankunlu618/_R0rYaNDdts.mp4';
     $expectedAudio = config('x-resources.r2_share_audio').'/@pastorpaulqiankunlu618/_R0rYaNDdts.m4a';
+    $expectedImage = config('x-resources.images_domain').'/images/2026/09/fff7796c70ffae08b51b2f19ad6cae61.jpg';
 
     $this->getJson('/resources/801')
         ->assertOk()
@@ -56,6 +57,8 @@ it('resolves keyword 801 to today PastorLu daily message via scrapeChannel', fun
         ->assertJsonPath('data.url', $expectedAudio)
         ->assertJsonPath('data.title', '每日圣经金句-260503-罗1:4')
         ->assertJsonPath('data.vid', '_R0rYaNDdts')
+        ->assertJsonPath('data.image', $expectedImage)
+        ->assertJsonPath('addition.data.image', $expectedImage)
         ->assertJsonPath('statistics.metric', 'PastorLu')
         ->assertJsonPath('statistics.keyword', '801')
         ->assertJsonPath('statistics.type', 'audio')
@@ -159,4 +162,57 @@ it('ignores subscribe-panel simpleText title and uses the real video title', fun
         ->assertOk()
         ->assertJsonPath('data.vid', '_R0rYaNDdts')
         ->assertJsonPath('data.title', '每日圣经金句-260503-罗1:4');
+});
+
+it('resolves keyword 808 to today PastorLu new testament reading', function () {
+    Carbon::setTestNow(Carbon::parse('2026-05-03 10:00:00', 'Asia/Shanghai'));
+
+    Http::fake([
+        '*/luNT.json' => Http::response([
+            '0503' => ['vid' => 'ntVid0503', 'title' => '带你读新约-罗马书1章'],
+        ]),
+    ]);
+
+    $expectedVideo = config('x-resources.r2_share_video').'/@pastorpaulqiankunlu618/ntVid0503.mp4';
+    $expectedAudio = config('x-resources.r2_share_audio').'/@pastorpaulqiankunlu618/ntVid0503.m4a';
+    $expectedImage = config('x-resources.images_domain').'/images/2026/09/085d5b0b4b5f15c4b998e61f5d35b4de.jpg';
+
+    $this->getJson('/resources/808')
+        ->assertOk()
+        ->assertJsonPath('type', 'link')
+        ->assertJsonPath('data.url', $expectedVideo)
+        ->assertJsonPath('data.title', '带你读新约-罗马书1章')
+        ->assertJsonPath('data.image', $expectedImage)
+        ->assertJsonPath('statistics.metric', 'PastorLu')
+        ->assertJsonPath('statistics.keyword', '808')
+        ->assertJsonPath('statistics.type', 'video')
+        ->assertJsonPath('addition.type', 'music')
+        ->assertJsonPath('addition.data.url', $expectedAudio)
+        ->assertJsonPath('addition.data.image', $expectedImage)
+        ->assertJsonPath('addition.statistics.type', 'audio');
+});
+
+it('resolves keyword 808 with an md offset', function () {
+    Carbon::setTestNow(Carbon::parse('2026-05-03 10:00:00', 'Asia/Shanghai'));
+
+    Http::fake([
+        '*/luNT.json' => Http::response([
+            '0503' => ['vid' => 'ntVid0503', 'title' => '带你读新约-罗马书1章'],
+            '0601' => ['vid' => 'ntVid0601', 'title' => '带你读新约-哥林多前书1章'],
+        ]),
+    ]);
+
+    $this->getJson('/resources/8080601')
+        ->assertOk()
+        ->assertJsonPath('data.title', '带你读新约-哥林多前书1章');
+});
+
+it('returns 404 for keyword 808 when the day is missing from luNT.json', function () {
+    Carbon::setTestNow(Carbon::parse('2026-05-03 10:00:00', 'Asia/Shanghai'));
+
+    Http::fake([
+        '*/luNT.json' => Http::response(['0601' => ['vid' => 'x', 'title' => 'y']]),
+    ]);
+
+    $this->getJson('/resources/808')->assertNotFound();
 });

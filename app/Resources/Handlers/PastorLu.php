@@ -95,7 +95,7 @@ class PastorLu
 
             $vid = $json[$day]['vid'];
             $title = $json[$day]['title'];
-            $image = 'https://r2.savefamily.net/uPic/2023/Amn09V.jpg';
+            $image = config('x-resources.images_domain').'/images/2026/09/085d5b0b4b5f15c4b998e61f5d35b4de.jpg';
 
             $mp4 = config('x-resources.r2_share_video').'/@pastorpaulqiankunlu618/'.$vid.'.mp4';
 
@@ -168,7 +168,7 @@ class PastorLu
                     return null;
                 }
 
-                $image = 'https://r2.savefamily.net/uPic/2023/Amn09V.jpg';
+                $image = config('x-resources.images_domain').'/images/2026/09/fff7796c70ffae08b51b2f19ad6cae61.jpg';
                 $data = [
                     'type' => 'link',
                     'data' => [

@@ -9,6 +9,9 @@ return [
     'r2_pub_domain' => env('R2_PUB_DOMAIN', 'https://pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev'),
     'r2_tingdao_domain' => env('R2_TINGDAO_DOMAIN', 'https://pub-6de883f3fd4a43c28675e9be668042c2.r2.dev'),
 
+    // 图片域名
+    'images_domain' => env('IMAGES_DOMAIN', 'https://images.simai.life'),
+
     // External API domains
     'jtoday_domain' => env('JTODAY_DOMAIN', 'http://www.jtoday.org'),
     'odb_domain' => env('ODB_DOMAIN', 'https://dzxuyknqkmi1e.cloudfront.net'),
