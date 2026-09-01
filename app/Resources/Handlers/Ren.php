@@ -9,15 +9,11 @@ use Illuminate\Support\Str;
 class Ren
 {
     private const DAILY_PROGRAMS = [
-        '813' => ['shorts' => true, 'title' => '每日經文', 'alias' => 'mrjw', 'id' => 'PL942JJGZpDIehJuBSaLIe_-irOegGih9M'],
-        '815' => ['shorts' => true, 'title' => '每日詩歌', 'alias' => 'mrsg', 'id' => 'PL942JJGZpDIeF0f51w_ZxoYOAmfXOlEiR'],
-        '816' => ['shorts' => true, 'title' => '每日禱告', 'alias' => 'mrdg', 'id' => 'PL942JJGZpDIfIollTxvXVxnR-b8HG0k6n'],
         '817' => ['title' => '喻道故事', 'id' => 'PL942JJGZpDIeu1QnggkoXQ8lymaMbA3gT'],
         '818' => ['shorts' => true, 'title' => '美國政治小知識', 'id' => 'PL942JJGZpDIdSluGl2wRHwoiZ43ucHYXw'],
         '819' => ['shorts' => false, 'title' => '節日特別節目', 'id' => 'PL942JJGZpDIeHgKvbi21itY15k3MTyeWL'],
         '820' => ['shorts' => false, 'title' => '聖經故事', 'id' => 'PL942JJGZpDIfNcwnO1aKqdU8VoXQqBZoN'],
         '821' => ['shorts' => false, 'title' => '我們看世界談話節目', 'id' => 'PL942JJGZpDIddB74WZ7X3CZQUJSpUealR', 'order' => 'asc'],
-        // '822' => ['shorts' => false, 'title' => '傳奇基督徒的二三事', 'id' => 'PL942JJGZpDIdm1vCiIjrj6pF5ZcwVVcw-'],
         '823' => ['shorts' => false, 'title' => '活力見證', 'id' => 'PL942JJGZpDIcGHU4XTiO3cLoUibfC05gf'],
         '824' => ['shorts' => false, 'title' => '孫老師夜話', 'id' => 'PLKpVlslvGNdjxJOrbOBwibe-MH7XeZfG2'],
     ];
@@ -87,11 +83,6 @@ class Ren
 
         $url = config('x-resources.r2_share_audio')."/@{$who}/{$vid}.mp4";
         $image = "https://i.ytimg.com/vi/{$vid}/sddefault.jpg";
-
-        if ($keyword == '813') {
-            $parts = explode('|', $title);
-            $title = trim(implode('|', array_slice($parts, 0, -1)));
-        }
 
         if (Str::startsWith($config['title'], '每日')) {
             $description = '@LFC活力生命 每日更新';
