@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Http;
 it('returns all videos with vid and title by default', function () {
     Http::fake([
         'youtube.com/@TestChannel/videos' => Http::response(
-            'html vi/abc123xyz00/more "text":"Test Video" rest vi/def456xyz00/more "text":"Second Video"'
+            'html vi/abc123xyz00/more "title":{"runs":[{"text":"Test Video"}]} rest vi/def456xyz00/more "title":{"runs":[{"text":"Second Video"}]}'
         ),
     ]);
 
@@ -23,7 +23,7 @@ it('returns all videos with vid and title by default', function () {
 it('returns single video as object when limit=1', function () {
     Http::fake([
         'youtube.com/@TestChannel/videos' => Http::response(
-            'html vi/abc123xyz00/more "text":"Test Video" rest vi/def456xyz00/more "text":"Second Video"'
+            'html vi/abc123xyz00/more "title":{"runs":[{"text":"Test Video"}]} rest vi/def456xyz00/more "title":{"runs":[{"text":"Second Video"}]}'
         ),
     ]);
 
@@ -37,7 +37,7 @@ it('returns single video as object when limit=1', function () {
 it('returns latest streams for a channel', function () {
     Http::fake([
         'youtube.com/@TestChannel/streams' => Http::response(
-            'html vi/stream12345/stuff "text":"Live Stream Title"'
+            'html vi/stream12345/stuff "title":{"runs":[{"text":"Live Stream Title"}]}'
         ),
     ]);
 
@@ -57,7 +57,7 @@ it('rejects invalid list type', function () {
 it('resolves @channelName-videos via resources route', function () {
     Http::fake([
         'youtube.com/@PastorTsai/videos' => Http::response(
-            'html vi/abc123xyz00/more "text":"Test Video Title"'
+            'html vi/abc123xyz00/more "title":{"runs":[{"text":"Test Video Title"}]}'
         ),
     ]);
 
@@ -73,7 +73,7 @@ it('resolves @channelName-videos via resources route', function () {
 it('resolves @channelName-streams via resources route', function () {
     Http::fake([
         'youtube.com/@TestChannel/streams' => Http::response(
-            'html vi/stream12345/more "text":"Stream Title"'
+            'html vi/stream12345/more "title":{"runs":[{"text":"Stream Title"}]}'
         ),
     ]);
 
