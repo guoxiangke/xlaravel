@@ -6,7 +6,6 @@ use App\Resources\ResourceResponse;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class Fwd
 {
@@ -112,24 +111,24 @@ class Fwd
             $tomorrow = now('Asia/Shanghai')->addDay()->startOfDay();
             $secondsUntilTomorrow = $tomorrow->diffInSeconds(now('Asia/Shanghai'));
 
-            $playListId="PLLDxN82mMW3PwG9whuWV6GOnOd2U-9dh5";
+            $playListId = 'PLLDxN82mMW3PwG9whuWV6GOnOd2U-9dh5';
             $first = \App\Resources\Helpers\YouTubeHelper::getAllItemsByPlaylistId($playListId)->first();
             $vid = $first->contentDetails->videoId;
             $title = $first->snippet->title;
-            
+
             if (! isset($vid)) {
                 return null;
             }
             $channelDomain = config('x-resources.r2_share_audio').'/@fwdforwardchurch7991/';
             $url = $channelDomain.$vid.'.mp4';
-            $image = config('x-resources.r2_share_audio').'/uPic/2023/IeDDmx.jpg';
+            $image = config('x-resources.images_domain').'/images/2026/09/8ad6d32b3035a974ad4fefb9c673afcd.jpg';
 
             $descs = explode('【', $title);
 
             $videoResponse = ResourceResponse::link([
                 'url' => $url,
                 'title' => '【日出神話】主日崇拜線上直播',
-                'description' => "",
+                'description' => '',
                 'image' => $image,
                 'vid' => $vid,
             ], [
@@ -164,7 +163,7 @@ class Fwd
     private function getPrayerMeeting(): ?ResourceResponse
     {
         try {
-           $playListId="PLLDxN82mMW3O6kSd-0ddG20ipoEi8RThY";
+            $playListId = 'PLLDxN82mMW3O6kSd-0ddG20ipoEi8RThY';
             $first = \App\Resources\Helpers\YouTubeHelper::getAllItemsByPlaylistId($playListId)->last();
             $vid = $first->contentDetails->videoId;
             $title = $first->snippet->title;
@@ -175,7 +174,7 @@ class Fwd
 
             $channelDomain = config('x-resources.r2_share_audio').'/@fwdforwardchurch7991/';
             $url = $channelDomain.$vid.'.mp4';
-            $image = config('x-resources.r2_share_audio').'/uPic/2023/IeDDmx.jpg';
+            $image = config('x-resources.images_domain').'/images/2026/09/f9532276b8c2d6f1cb1687a2fe794d00.jpg';
 
             $videoResponse = ResourceResponse::link([
                 'url' => $url,
@@ -240,7 +239,7 @@ class Fwd
             $title = $matches['snippet']['title'];
             $channelDomain = config('x-resources.r2_share_audio').'/@fwdforwardchurch7991/';
             $url = $channelDomain.$vid.'.mp4';
-            $image = config('x-resources.r2_share_audio').'/uPic/2023/IeDDmx.jpg';
+            $image = config('x-resources.images_domain').'/images/2026/09/8ad6d32b3035a974ad4fefb9c673afcd.jpg';
 
             $titleArray = explode('｜', $title);
             $mainTitle = $titleArray[0];
