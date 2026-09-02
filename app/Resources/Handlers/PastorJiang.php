@@ -2,6 +2,7 @@
 
 namespace App\Resources\Handlers;
 
+use App\Resources\Helpers\ImageHelper;
 use App\Resources\ResourceResponse;
 use Illuminate\Support\Facades\Http;
 
@@ -50,8 +51,7 @@ class PastorJiang
         $urlBase = $isVideo ? config('x-resources.r2_share_video') : config('x-resources.r2_share_audio');
         $extension = $isVideo ? 'mp4' : 'm4a';
 
-        $thumbnails = $json['thumbnails'] ?? [];
-        $image = $thumbnails[count($thumbnails) - 1]['url'] ?? $thumbnails[0]['url'] ?? '';
+        $image = ImageHelper::youtubeThumbnail($vid);
 
         $data = [
             'url' => $urlBase."/{$who}/{$vid}.{$extension}",

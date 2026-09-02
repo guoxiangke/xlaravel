@@ -1,5 +1,6 @@
 <?php
 
+use App\Resources\Helpers\ImageHelper;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
@@ -24,6 +25,8 @@ it('resolves keyword 900 to audio music with a two-text video guide addition', f
         ->assertJsonPath('type', 'music')
         ->assertJsonPath('data.url', $expectedAudio)
         ->assertJsonPath('data.vid', 'vidABC')
+        // 封面固定取 hqdefault 并经代理转 JPEG，不再读数据源的 thumbnails
+        ->assertJsonPath('data.image', ImageHelper::youtubeThumbnail('vidABC'))
         ->assertJsonPath('statistics.metric', 'PastorJiang')
         ->assertJsonPath('statistics.keyword', '900')
         ->assertJsonPath('statistics.type', 'audio')
@@ -54,4 +57,36 @@ it('includes the 真爱聆听 mini-program guidance in the second text', functio
 
 it('no longer resolves playlist keywords like 901', function () {
     $this->getJson('/resources/901')->assertNotFound();
+});
+
+it('ignores the data source thumbnails, which may be WebP or missing', function () {
+    Http::fake([
+        '*youtube_channels/latest_update*' => Http::response([
+            'id' => 'vidABC',
+            'title' => '最新直播',
+            // 数据源现在只给带 sqp 签名的地址，实际返回 WebP，微信无法显示
+            'thumbnails' => [
+                ['url' => 'https://i.ytimg.com/vi/vidABC/hq720.jpg?sqp=-oaymwE&rs=AOn4CL'],
+            ],
+        ]),
+    ]);
+
+    $image = $this->getJson('/resources/900')->assertOk()->json('data.image');
+
+    expect($image)->not->toContain('sqp=');
+    expect($image)->toContain('hqdefault.jpg');
+    expect($image)->toContain('output=jpg');
+});
+
+it('still resolves 900 when the data source has no thumbnails at all', function () {
+    Http::fake([
+        '*youtube_channels/latest_update*' => Http::response([
+            'id' => 'vidABC',
+            'title' => '最新直播',
+        ]),
+    ]);
+
+    $this->getJson('/resources/900')
+        ->assertOk()
+        ->assertJsonPath('data.image', ImageHelper::youtubeThumbnail('vidABC'));
 });

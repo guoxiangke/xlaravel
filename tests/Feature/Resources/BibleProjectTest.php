@@ -36,3 +36,21 @@ it('can fetch bible project data for keyword bibleproject', function () {
     expect($result->type)->toBe('link');
     expect($result->data['url'])->toContain('test.mp4');
 });
+
+it('gives the video and audio messages the same cover image', function () {
+    Cache::flush();
+
+    Http::fake([
+        'bibleproject.com/*' => Http::response(
+            '<div class="intl-downloads-item-title">测试标题</div>'
+            .'<a href="https://example.com/a.mp4"></a>'
+            .'<a href="https://example.com/a.png"></a>'
+        ),
+    ]);
+
+    $response = (new App\Resources\Handlers\BibleProject)->resolve('783');
+    $json = $response->jsonSerialize();
+
+    expect($json['data']['image'])->toBe($json['addition']['data']['image']);
+    expect($json['data']['image'])->toContain('example.com%2Fa.png');
+});

@@ -2,6 +2,7 @@
 
 namespace App\Resources\Handlers;
 
+use App\Resources\Helpers\ImageHelper;
 use App\Resources\ResourceResponse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -52,7 +53,7 @@ class Beta
             $title = '為兒女禱告40天';
             $desc = '救恩之聲 靈修禱告';
             $prefix = 'https://www.vos.org.tw/Datafile/UploadFile/Voice/70/';
-            $image = 'https://wsrv.nl/?url=https://i0.wp.com/cchappyfamily.plus/wp-content/uploads/2018/05/pray20180515.jpg';
+            $image = config('x-resources.images_domain').'/images/2026/09/96c607f27642e32e5bb81f712ad9337b.jpg';
             $items = [
                 '20190122153048.mp3', '20190122153311.mp3', '20190122153321.mp3', '20190122153330.mp3',
                 '20190122153401.mp3', '20190122153421.mp3', '20190122153447.mp3', '20190122153516.mp3',
@@ -401,17 +402,21 @@ class Beta
             }
             $mp4Url = 'https://www.alopen.org/Portals/0/Downloads/'.$url;
 
+            // 视频与音频两条消息共用同一张封面
+            $image = 'https://www.alopen.org/portals/0/Images/PastorPaulChangPhoto.jpg';
+
             $video = ResourceResponse::link([
                 'url' => $mp4Url,
                 'title' => '古德恩系統神學導讀 (張麟至牧師)',
                 'description' => '('.($index + 1)."/{$total})".$title,
-                'image' => 'https://www.alopen.org/portals/0/Images/PastorPaulChangPhoto.jpg',
+                'image' => $image,
             ], ['metric' => 'Tpehoc', 'keyword' => $keyword, 'type' => 'video']);
 
             return ResourceResponse::music([
                 'url' => $mp4Url,
                 'title' => '古德恩系統神學導讀 (張麟至牧師)',
                 'description' => '('.($index + 1)."/{$total})".$title,
+                'image' => $image,
             ], ['metric' => 'Tpehoc', 'keyword' => $keyword], $video);
         }
 
@@ -539,7 +544,7 @@ class Beta
                     $title = str_replace('&#8230;', '', $title);
                     $description = str_replace('&#8230;', '', $description);
 
-                    $image = 'https://wsrv.nl/?url=i.ytimg.com/vi/JCNu1COWfJY/mqdefault.jpg';
+                    $image = ImageHelper::youtubeThumbnail('JCNu1COWfJY');
 
                     $Ym = Carbon::now('Asia/Shanghai')->format('Ym');
                     $Ymd = Carbon::now('Asia/Shanghai')->format('Ymd');
@@ -549,7 +554,7 @@ class Beta
                         'url' => $grace365Url,
                         'title' => '恩典365',
                         'description' => $Ymd,
-                        'image' => 'https://wsrv.nl/?url=tpehoc.org.tw/wp-content/uploads/2024/10/365-615x346.png',
+                        'image' => config('x-resources.images_domain').'/images/2026/09/954928fead3092a7e1e91ce59b96aa25.png',
                     ], ['metric' => 'Tpehoc', 'keyword' => $keyword, 'type' => 'video']);
 
                     $date = now()->format('Ymd');

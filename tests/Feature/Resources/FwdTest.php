@@ -1,6 +1,7 @@
 <?php
 
 use App\Resources\Handlers\Fwd;
+use App\Resources\Helpers\ImageHelper;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
@@ -31,7 +32,7 @@ it('resolves keyword 803 sunday service with the configured image', function () 
         makeFwdPlaylistItem('svcOldest', '主日崇拜【舊的】'),
     ]);
 
-    $expectedImage = config('x-resources.images_domain').'/images/2026/09/8ad6d32b3035a974ad4fefb9c673afcd.jpg';
+    $expectedImage = ImageHelper::thumbnail(config('x-resources.images_domain').'/images/2026/09/8ad6d32b3035a974ad4fefb9c673afcd.jpg');
 
     $result = (new Fwd)->resolve('803');
 
@@ -47,7 +48,7 @@ it('resolves keyword 804 prayer meeting with the configured image', function () 
         makeFwdPlaylistItem('prayOldest', '禱告會【舊的】'),
     ]);
 
-    $expectedImage = config('x-resources.images_domain').'/images/2026/09/f9532276b8c2d6f1cb1687a2fe794d00.jpg';
+    $expectedImage = ImageHelper::thumbnail(config('x-resources.images_domain').'/images/2026/09/f9532276b8c2d6f1cb1687a2fe794d00.jpg');
 
     $result = (new Fwd)->resolve('804');
 
@@ -67,7 +68,7 @@ it('resolves keyword 806 sunday message with the configured image', function () 
         ]),
     ]);
 
-    $expectedImage = config('x-resources.images_domain').'/images/2026/09/8ad6d32b3035a974ad4fefb9c673afcd.jpg';
+    $expectedImage = ImageHelper::thumbnail(config('x-resources.images_domain').'/images/2026/09/8ad6d32b3035a974ad4fefb9c673afcd.jpg');
 
     $result = (new Fwd)->resolve('806');
 

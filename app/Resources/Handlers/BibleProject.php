@@ -81,10 +81,14 @@ final class BibleProject
             $url = $r2ShareVideo.'/thebibleproject/'.basename($mp4links[$index]);
             $title = "{$offset}/{$total} 【{$keyword}】".$titles[$index];
 
+            // 视频与音频两条消息共用同一张封面，避免只有其中一条有图
+            $image = $pnglinks[$index] ?? '';
+
             $addition = ResourceResponse::music([
                 'url' => $url,
                 'title' => $title,
                 'description' => '来自 Bible Project',
+                'image' => $image,
             ], [
                 'metric' => class_basename(__CLASS__),
                 'keyword' => $offset,
@@ -95,7 +99,7 @@ final class BibleProject
                 'url' => $url,
                 'title' => $title,
                 'description' => '来自 Bible Project',
-                'image' => $pnglinks[$index] ?? '',
+                'image' => $image,
             ], [
                 'metric' => class_basename(__CLASS__),
                 'keyword' => $offset,

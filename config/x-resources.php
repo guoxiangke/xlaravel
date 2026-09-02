@@ -12,6 +12,10 @@ return [
     // 图片域名
     'images_domain' => env('IMAGES_DOMAIN', 'https://images.simai.life'),
 
+    // 封面缩略图代理：统一转 JPEG 并限制宽度，留空则直接使用原图地址
+    'thumbnail_proxy' => env('THUMBNAIL_PROXY', 'https://wsrv.nl'),
+    'thumbnail_width' => env('THUMBNAIL_WIDTH', 400),
+
     // External API domains
     'jtoday_domain' => env('JTODAY_DOMAIN', 'http://www.jtoday.org'),
     'odb_domain' => env('ODB_DOMAIN', 'https://dzxuyknqkmi1e.cloudfront.net'),

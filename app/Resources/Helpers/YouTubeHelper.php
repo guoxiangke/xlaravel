@@ -89,7 +89,7 @@ class YouTubeHelper
      */
     public static function buildChannelResponse(string $vid, string $title, string $channelName): array
     {
-        $image = "https://i.ytimg.com/vi/{$vid}/maxresdefault.jpg";
+        $image = ImageHelper::youtubeThumbnail($vid);
         $mp4 = config('x-resources.r2_share_video')."/@{$channelName}/{$vid}.mp4";
         $m4a = config('x-resources.r2_share_audio')."/@{$channelName}/{$vid}.m4a";
 

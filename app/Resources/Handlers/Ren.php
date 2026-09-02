@@ -2,6 +2,7 @@
 
 namespace App\Resources\Handlers;
 
+use App\Resources\Helpers\ImageHelper;
 use App\Resources\Helpers\YouTubeHelper;
 use App\Resources\ResourceResponse;
 
@@ -81,7 +82,7 @@ class Ren
         $who = 'LFC';
 
         $url = config('x-resources.r2_share_audio')."/@{$who}/{$vid}.mp4";
-        $image = "https://i.ytimg.com/vi/{$vid}/sddefault.jpg";
+        $image = ImageHelper::youtubeThumbnail($vid);
 
         $title = "【{$keyword}】{$config['title']} {$title}";
         $description = $item->snippet->description;
@@ -154,7 +155,7 @@ class Ren
         $who = $config['who'] ?? 'LFC';
 
         $url = config('x-resources.r2_share_audio')."/@{$who}/{$vid}.mp4";
-        $image = "https://i.ytimg.com/vi/{$vid}/sddefault.jpg";
+        $image = ImageHelper::youtubeThumbnail($vid);
 
         $videoResponse = ResourceResponse::link([
             'url' => $url,

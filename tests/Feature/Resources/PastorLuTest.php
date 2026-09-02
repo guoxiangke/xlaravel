@@ -1,5 +1,6 @@
 <?php
 
+use App\Resources\Helpers\ImageHelper;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -49,7 +50,7 @@ it('resolves keyword 801 to today PastorLu daily message via scrapeChannel', fun
 
     $expectedVideo = config('x-resources.r2_share_video').'/@pastorpaulqiankunlu618/_R0rYaNDdts.mp4';
     $expectedAudio = config('x-resources.r2_share_audio').'/@pastorpaulqiankunlu618/_R0rYaNDdts.m4a';
-    $expectedImage = config('x-resources.images_domain').'/images/2026/09/fff7796c70ffae08b51b2f19ad6cae61.jpg';
+    $expectedImage = ImageHelper::thumbnail(config('x-resources.images_domain').'/images/2026/09/fff7796c70ffae08b51b2f19ad6cae61.jpg');
 
     $this->getJson('/resources/801')
         ->assertOk()
@@ -175,7 +176,7 @@ it('resolves keyword 808 to today PastorLu new testament reading', function () {
 
     $expectedVideo = config('x-resources.r2_share_video').'/@pastorpaulqiankunlu618/ntVid0503.mp4';
     $expectedAudio = config('x-resources.r2_share_audio').'/@pastorpaulqiankunlu618/ntVid0503.m4a';
-    $expectedImage = config('x-resources.images_domain').'/images/2026/09/085d5b0b4b5f15c4b998e61f5d35b4de.jpg';
+    $expectedImage = ImageHelper::thumbnail(config('x-resources.images_domain').'/images/2026/09/085d5b0b4b5f15c4b998e61f5d35b4de.jpg');
 
     $this->getJson('/resources/808')
         ->assertOk()

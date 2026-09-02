@@ -1,6 +1,7 @@
 <?php
 
 use App\Resources\Handlers\Lts;
+use App\Resources\Helpers\ImageHelper;
 use App\Resources\ResourceResponse;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Facades\Cache;
@@ -153,22 +154,22 @@ it('returns null for pos 00', function () {
 
 it('uses ltsnop cover for 专题特辑', function () {
     expect((new Lts)->resolve('201')->data['image'])
-        ->toBe('https://d3ml8yyp1h3hy5.cloudfront.net/ly/image/cover/ltsnop.jpg');
+        ->toBe(ImageHelper::thumbnail('https://d3ml8yyp1h3hy5.cloudfront.net/ly/image/cover/ltsnop.jpg'));
 });
 
 it('uses ltsnp cover for 启航课程', function () {
     expect((new Lts)->resolve('301')->data['image'])
-        ->toBe('https://d3ml8yyp1h3hy5.cloudfront.net/ly/image/cover/ltsnp.jpg');
+        ->toBe(ImageHelper::thumbnail('https://d3ml8yyp1h3hy5.cloudfront.net/ly/image/cover/ltsnp.jpg'));
 });
 
 it('uses ltstpa1 cover for 普及本科', function () {
     expect((new Lts)->resolve('401')->data['image'])
-        ->toBe('https://d3ml8yyp1h3hy5.cloudfront.net/ly/image/cover/ltstpa1.jpg');
+        ->toBe(ImageHelper::thumbnail('https://d3ml8yyp1h3hy5.cloudfront.net/ly/image/cover/ltstpa1.jpg'));
 });
 
 it('uses ltstpb1 cover for 普及进深', function () {
     expect((new Lts)->resolve('501')->data['image'])
-        ->toBe('https://d3ml8yyp1h3hy5.cloudfront.net/ly/image/cover/ltstpb1.jpg');
+        ->toBe(ImageHelper::thumbnail('https://d3ml8yyp1h3hy5.cloudfront.net/ly/image/cover/ltstpb1.jpg'));
 });
 
 // ── description 回落逻辑 ────────────────────────────────────────────────────

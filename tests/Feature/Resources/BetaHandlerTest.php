@@ -121,3 +121,11 @@ it('resolves 781 (新媒体宣教) with complete data', function () {
     expect($result->type)->toBe('music');
     expect($result->data['title'])->toContain('新媒体宣教课程');
 });
+
+it('gives 785 video and audio messages the same cover image', function () {
+    $json = (new App\Resources\Handlers\Beta)->resolve('785')->jsonSerialize();
+
+    expect($json['data']['image'])
+        ->toBe($json['addition']['data']['image'])
+        ->toContain('PastorPaulChangPhoto.jpg');
+});

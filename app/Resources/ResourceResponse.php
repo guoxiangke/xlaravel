@@ -2,6 +2,7 @@
 
 namespace App\Resources;
 
+use App\Resources\Helpers\ImageHelper;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
 
@@ -12,7 +13,11 @@ class ResourceResponse implements Jsonable, JsonSerializable
         public array $data,
         public ?ResourceResponse $addition = null,
         public array $statistics = []
-    ) {}
+    ) {
+        if (isset($this->data['image']) && is_string($this->data['image'])) {
+            $this->data['image'] = ImageHelper::thumbnail($this->data['image']);
+        }
+    }
 
     /**
      * Convert the object to its JSON representation

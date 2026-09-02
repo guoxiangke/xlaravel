@@ -2,6 +2,7 @@
 
 namespace App\Resources\Handlers;
 
+use App\Resources\Helpers\ImageHelper;
 use App\Resources\Helpers\YouTubeHelper;
 use App\Resources\ResourceResponse;
 use Illuminate\Support\Facades\Cache;
@@ -27,8 +28,8 @@ class Youtubes
                 $videoInfo = YouTubeHelper::getVideoInfo($vid);
                 $title = $videoInfo->snippet->title;
                 $description = $videoInfo->snippet->description;
-                $image = "https://i.ytimg.com/vi/{$vid}/maxresdefault.jpg";
-                $thumbnails = $videoInfo->snippet->thumbnails->medium->url ?? $image;
+                $thumbnails = $videoInfo->snippet->thumbnails->medium->url
+                    ?? ImageHelper::youtubeThumbnail($vid);
 
                 $mp4 = config('x-resources.r2_share_video')."/tmpshare/{$vid}.mp4";
                 $mp3 = config('x-resources.r2_share_audio')."/tmpshare/{$vid}.m4a";
