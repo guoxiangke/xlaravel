@@ -565,6 +565,7 @@ class Beta
                         'title' => $title,
                         'description' => $description,
                         'image' => $image,
+                        'oriUrl' => $mp3,
                     ];
 
                     Cache::put($cacheKey, $data, strtotime('tomorrow') - time());
