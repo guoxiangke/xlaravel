@@ -15,7 +15,7 @@ it('can resolve keywords from all handlers', function (string $keyword, string $
         'febc.blob.core.windows.net/*' => Http::response([['path' => 'test.mp3', 'time' => '260220', 'title' => 'Test']]),
         'docs.google.com/*' => Http::response('<tr><td>'.now()->format('n-j-Y').'</td><td>c</td><td>Desc</td><td>Text</td></tr>'),
         'www.tpehoc.org.tw/*' => Http::response('<html><body><h3 class="post-content-outer"><a href="link">Title</a></h3><div class="post-content">Description</div><source src="test.mp3"></body></html>'),
-        'www.zanmei.ai/*' => Http::response('<html><body><a href="/song/123.html">Title</a></body></html>'),
+        'www.zanmei.ai/*' => Http::response('<div class="songs"><table><tr><td class="name"><a href="/song/123.html">Title</a></td><td class="length"><span style="width:50%;">&nbsp;</span></td></tr></table></div>'),
         'x.lydt.work/*' => Http::response(['data' => [['link' => 'test.mp3', 'alias' => 'fa260220', 'program' => ['name' => 'Test'], 'description' => 'Desc']]]),
         'pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/youtube_channels/*' => Http::response(['id' => 'vid', 'title' => 'Title', 'thumbnails' => [['url' => 'img-low'], ['url' => 'img']]]),
         'pub-3813a5d14cba4eaeb297a0dba302143c.r2.dev/hland/*' => Http::response(array_fill(0, 100, ['title' => 'Title', 'url' => 'http://example.com/blog/123'])),
@@ -193,4 +193,38 @@ describe('LyAudio 654 与神同行 replay', function () {
         ['2026-04-19', 'it220830', '2022'], // Sun → 回退到周五 → Tue 2022-08-30
         ['2026-04-20', 'it220831', '2022'], // Mon → Wed 2022-08-31
     ]);
+});
+
+describe('Zan 赞美诗网', function () {
+    it('picks the song with the highest popularity width', function () {
+        $row = fn (int $id, string $title, string $width) => '<tr><td class="name"><div>'
+            ."<a href=\"/song/{$id}.html\"><em>{$title}</em></a> - <a href=\"/album/1.html\">《专辑{$id}》</a> - <a href=\"/artist/a.html\">歌手{$id}</a>"
+            ."</div></td><td class=\"length\" title='总人气'><span style=\"width:{$width}%;\">&nbsp;</span></td></tr>";
+
+        Http::fake([
+            'www.zanmei.ai/*' => Http::response('<div class="songs mt5"><table>'
+                .$row(111, '奇异恩典A', '22.2')
+                .$row(222, '奇异恩典B', '79.31')
+                .$row(333, '奇异恩典C', '45.18')
+                .'</table></div>'),
+        ]);
+
+        $result = (new \App\Resources\Handlers\Zan)->resolve('赞美奇异恩典测试');
+
+        expect($result->type)->toBe('music');
+        expect($result->data['url'])->toBe(config('services.zanmei.play_url').'/222.mp3');
+        expect($result->data['title'])->toBe('奇异恩典B');
+        expect($result->data['description'])->toBe('《专辑222》 歌手222');
+    });
+
+    it('returns the not found message when there are no results', function () {
+        Http::fake([
+            'www.zanmei.ai/*' => Http::response('<div class="empty">找不到相关内容</div>'),
+        ]);
+
+        $result = (new \App\Resources\Handlers\Zan)->resolve('赞美不存在的歌测试');
+
+        expect($result->type)->toBe('text');
+        expect($result->data['content'])->toBe('找不到相关内容');
+    });
 });

@@ -3,6 +3,7 @@
 namespace App\Resources\Handlers;
 
 use App\Resources\ResourceResponse;
+use Dom\HTMLDocument;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -39,30 +40,25 @@ class Zan
                     if ($response->failed()) {
                         return null;
                     }
-                    $html = $response->body();
+                    $dom = HTMLDocument::createFromString($response->body(), LIBXML_NOERROR);
 
-                    // Check if empty result
-                    if (strpos($html, 'class="empty"') !== false) {
-                        return ResourceResponse::text(['content' => '没有找到相关歌曲']);
+                    $notFound = $dom->querySelector('.empty');
+                    if ($notFound) {
+                        return ResourceResponse::text(['content' => trim($notFound->textContent) ?: '没有找到相关歌曲']);
                     }
 
-                    // Simple regex to find song links and metadata
-                    // Looking for: <a href="/song/12345.html" class="song-name">Song Title</a>
-                    if (preg_match_all('/<a[^>]*href="\/song\/(\d+)\.html"[^>]*>(.*?)<\/a>/', $html, $matches)) {
-                        $id = $matches[1][0];
-                        $title = trim(strip_tags($matches[2][0]));
-
-                        $mp3 = config('services.zanmei.play_url')."/{$id}.mp3";
-                        $data = [
-                            'url' => $mp3,
-                            'title' => $title,
-                            'description' => '来自赞美诗网',
-                        ];
-
-                        Cache::put($cacheKey, $data, 3600);
-                    } else {
+                    $song = $this->findMostPopularSong($dom);
+                    if (! $song) {
                         return null;
                     }
+
+                    $data = [
+                        'url' => config('services.zanmei.play_url')."/{$song['id']}.mp3",
+                        'title' => $song['title'],
+                        'description' => $song['description'],
+                    ];
+
+                    Cache::put($cacheKey, $data, 3600);
                 } catch (\Exception $e) {
                     return null;
                 }
@@ -76,5 +72,37 @@ class Zan
         }
 
         return null;
+    }
+
+    /**
+     * 总人气数值已隐藏，按 .length span 的 width 百分比选出人气最高的歌曲。
+     *
+     * @return array{id: string, title: string, description: string}|null
+     */
+    protected function findMostPopularSong(HTMLDocument $dom): ?array
+    {
+        $bestSong = null;
+        $maxPopularity = -1.0;
+
+        foreach ($dom->querySelectorAll('.songs table tr') as $row) {
+            $links = $row->querySelectorAll('.name a');
+            if ($links->length === 0 || ! preg_match('/\/song\/(\d+)\.html/', $links[0]->getAttribute('href') ?? '', $idMatch)) {
+                continue;
+            }
+
+            $style = $row->querySelector('.length span')?->getAttribute('style') ?? '';
+            $popularity = preg_match('/width:\s*([\d.]+)%/', $style, $widthMatch) ? (float) $widthMatch[1] : 0.0;
+
+            if ($popularity > $maxPopularity) {
+                $maxPopularity = $popularity;
+                $bestSong = [
+                    'id' => $idMatch[1],
+                    'title' => trim($links[0]->textContent),
+                    'description' => trim($links[1]?->textContent.' '.$links[2]?->textContent) ?: '来自赞美诗网',
+                ];
+            }
+        }
+
+        return $bestSong;
     }
 }
