@@ -58,7 +58,6 @@ class PastorJiang
             'title' => $json['title'],
             'description' => '江涌流牧师的频道',
             'vid' => $vid,
-            'image' => $image,
         ];
 
         $statistics = [
