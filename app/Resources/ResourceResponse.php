@@ -83,6 +83,6 @@ class ResourceResponse implements Jsonable, JsonSerializable
             'content' => config('x-resources.video_guide_text'),
         ]);
 
-        return self::text(['content' => "App内容位置： ybzx://channel/".$code], [], $guide);
+        return self::text(['content' => $code], [], $guide);
     }
 }
