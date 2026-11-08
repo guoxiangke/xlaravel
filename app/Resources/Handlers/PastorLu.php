@@ -6,7 +6,6 @@ use App\Resources\Helpers\YouTubeHelper;
 use App\Resources\ResourceResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class PastorLu
 {
@@ -147,12 +146,14 @@ class PastorLu
                     return null;
                 }
 
-                $day = now()->setTimezone('Asia/Shanghai')->format('md');
+                $now = now()->setTimezone('Asia/Shanghai');
+                // 标题日期格式不固定：1109 / 11/09 / 11/9
+                $pattern = sprintf('#(?<!\d)(%s|%s/0?%d)(?!\d)#', $now->format('md'), $now->format('m'), $now->day);
 
                 $vid = null;
                 $title = null;
                 foreach ($results as $item) {
-                    if (Str::contains($item['title'], $day)) {
+                    if (preg_match($pattern, $item['title'])) {
                         $vid = $item['videoId'];
                         $title = $item['title'];
                         break;
